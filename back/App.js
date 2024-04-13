@@ -32,7 +32,6 @@ app.use(cors(corsOptions));
 const getConnection = async () => {
   try{
     const connection = await mysql.createConnection(dbConfig);
-    console.log("Conexion establecida");
     return connection;
   }catch(error){
     console.log(error)
@@ -42,7 +41,7 @@ const getConnection = async () => {
 
 app.get("/", async (req, res) => {
   getConnection();
-  res.json({ message: "¡Hola desde el servidor Express!" });
+  res.json({ message: "CENTRE\nINTENACIONAL D'EDUCACIÓ" });
 });
 
 app.listen(PORT, () => {
