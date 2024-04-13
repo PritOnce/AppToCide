@@ -1,0 +1,50 @@
+require('dotenv').config();
+
+const express = require("express");
+const cors = require("cors");
+const mysql = require("mysql2/promise");
+
+const PORT = process.env.PORT;
+
+const app = express();
+
+const allowedOrigins = [
+  "http://192.168.1.65:3001", // IP de la red local
+  "http://localhost:8081",    // localhost
+];
+
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ["GET", "POST"], // Permitir solicitudes GET y POST
+  credentials: true, // Habilitar credenciales
+};
+
+const dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME
+};
+
+app.use(cors(corsOptions));
+
+
+const getConnection = async () => {
+  try{
+    const connection = await mysql.createConnection(dbConfig);
+    console.log("Conexion establecida");
+    return connection;
+  }catch(error){
+    console.log(error)
+    throw new Error("Error al conectar con la base de datos")
+  }
+}
+
+app.get("/", async (req, res) => {
+  getConnection();
+  res.json({ message: "¡Hola desde el servidor Express!" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto: ${PORT}`);
+});
