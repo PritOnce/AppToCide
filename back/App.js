@@ -4,11 +4,12 @@ const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
 const allowedOrigins = [
+  "http://172.16.161.76:3001",
   "http://192.168.1.65:3001", // IP de la red local
   "http://localhost:8081",    // localhost
 ];
@@ -43,6 +44,15 @@ app.get("/", async (req, res) => {
   getConnection();
   res.json({ message: "CENTRE\nINTENACIONAL D'EDUCACIÓ" });
 });
+
+app.get("/logReg", async (req, res) => {
+  getConnection();
+  res.json({ 
+    login: "Iniciar Sesión", 
+    register: "Registrarse" 
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto: ${PORT}`);

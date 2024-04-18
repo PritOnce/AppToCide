@@ -1,59 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from "react";
+import Fondo from "../Maquetas/Fondo";
 
-export default function App() {
+import { useNavigation } from '@react-navigation/native';
+import { Text, StyleSheet, TouchableOpacity } from "react-native";
+
+export default function StartPage() {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate('LogRegPage');
+  };
+
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch('http://192.168.1.65:3001')
-      .then(response => response.json())
-      .then(data => setData(data.message))
-      .catch(error => console.error('Error fetching data:', error));
+    fetch("http://172.16.161.76:3001")
+      .then((response) => response.json())
+      .then((data) => setData(data.message))
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require('../assets/logoCide.png')}
-        style={styles.logo}
-      />
-      <View style={styles.square}>
-        <Text style={styles.title}>{!data ? 'Cargando...' : data}</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btn_text}>ENTRAR</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <Fondo>
+      <Text style={styles.title}>{data}</Text>
+      <TouchableOpacity style={styles.button} onPress={handlePress}>
+        <Text style={styles.btn_text}>ENTRAR</Text>
+      </TouchableOpacity>
+    </Fondo>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    marginTop: 70,
-    aspectRatio: 1,
-    position: 'absolute',
-    top: 0,
-  },
   title: {
     fontSize: 36,
-    marginBottom: 16,
-    marginTop: 100,
-    marginLeft: 20,
-    color: 'white',
-  },
-  square: {
-    width: '100%',
-    aspectRatio: 1,
-    backgroundColor: '#2C8344',
-    position: 'absolute',
-    bottom: 0,
-    borderTopLeftRadius: 100,
+    marginTop: 70,
+    marginLeft: 30,
+    textAlign: "left",
+    color: "white"
   },
   button: {
     backgroundColor: 'white',
@@ -64,12 +47,12 @@ const styles = StyleSheet.create({
     width: 84,
     height: 40,
     marginLeft: 300,
-    marginTop: 80,
+    marginTop: 90
   },
   btn_text:{
     color: 'black',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'center'
   }
 });
