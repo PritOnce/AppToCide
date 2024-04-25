@@ -10,7 +10,8 @@ const app = express();
 
 const allowedOrigins = [
   "http://172.16.161.76:3001",
-  "http://192.168.1.65:3001", // IP de la red local
+  "http://192.168.1.65:3001",
+  "http://172.16.26.27:3001", // IP de la red local
   "http://localhost:8081",    // localhost
 ];
 
@@ -56,10 +57,18 @@ app.get("/logReg", async (req, res) => {
 app.get("/login", async (req, res) => {
   getConnection();
   res.json({ 
-    user: "Usuario", 
-    contaseña: "Contraseña",
+    user: "Usuario:", 
+    contaseña: "Contraseña:",
     restart: "He olvidado la contraseña",
     reg: "Registrar"
+  });
+});
+
+app.get("/restartPassw", async (req, res) => {
+  getConnection();
+  res.json({ 
+    newContaseña: "Nueva Contraseña:",
+    repitNewContaseña: "Repite Contraseña:",
   });
 });
 

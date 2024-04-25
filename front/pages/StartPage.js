@@ -8,7 +8,7 @@ export default function StartPage() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetch("http://192.168.1.65:3001")
+    fetch("http://172.16.26.27:3001")
       .then((response) => response.json())
       .then((data) => setData(data.message))
       .catch((error) => console.error("Error fetching data:", error));
@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
+    borderColor: "black",
+    borderWidth: 3
   },
   buttonText: {
     color: "black",

@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import Fondo from "../Maquetas/Fondo";
 import { Text, StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
 
+import { useNavigation } from '@react-navigation/native';
+
 export default function LoginPage() {
+    const navigation = useNavigation();
+
     const [userText, setUserText] = useState("");
     const [passText, setPassText] = useState("");
     const [restartText, setRestartText] = useState("");
     const [regText, setRegText] = useState("");
 
     useEffect(() => {
-        fetch('http://192.168.1.65:3001/login')
+        fetch('http://172.16.26.27:3001/login')
             .then(response => response.json())
             .then(data => {
                 setUserText(data.user);
@@ -26,21 +30,20 @@ export default function LoginPage() {
                 <TextInput
                     style={styles.input}
                     placeholder="Usuario"
-                    onChangeText={setUserText}
                 />
                 <TextInput
                     style={styles.input}
                     placeholder="Contraseña"
                     secureTextEntry
                 />
-                <TouchableOpacity style={styles.buttonRestart} onPress={() => { }}>
+                <TouchableOpacity style={styles.buttonRestart} onPress={() => { navigation.navigate('ResetPassword') }}>
                     <Text style={styles.buttonRestartText}>{restartText}</Text>
                 </TouchableOpacity>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={() => { }}>
                         <Text style={styles.buttonText}>Entrar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => { }}>
+                    <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('RegisterPage') }}>
                         <Text style={styles.buttonText}>{regText}</Text>
                     </TouchableOpacity>
                 </View>
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 5,
-        marginHorizontal: 10, // Espacio horizontal entre botones
+        marginHorizontal: 10,
         bottom: -20,
         borderColor: "black",
         borderWidth: 3,

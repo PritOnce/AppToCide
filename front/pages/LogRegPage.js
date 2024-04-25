@@ -12,7 +12,7 @@ export default function LogRegPage() {
     const [registerText, setRegisterText] = useState("");
 
     useEffect(() => {
-        fetch('http://192.168.1.65:3001/logReg') // Cambia la URL por la dirección de tu servidor backend
+        fetch('http://172.16.26.27:3001/logReg') // Cambia la URL por la dirección de tu servidor backend
             .then(response => response.json())
             .then(data => {
                 setLoginText(data.login);
@@ -29,7 +29,9 @@ export default function LogRegPage() {
                 onPress={() => navigation.navigate('LoginPage')}>
                     <Text style={styles.buttonText}>{loginText}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity 
+                style={styles.button}
+                onPress={() => navigation.navigate('RegisterPage')}>
                     <Text style={styles.buttonText}>{registerText}</Text>
                 </TouchableOpacity>
             </View>
@@ -51,9 +53,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 10,
-        marginVertical: 10,
-        marginBottom: 40,
-        marginTop: 10,
+        borderWidth: 3,
+        borderColor: "black",
+        marginVertical: 25,
     },
     buttonText: {
         color: "black",
