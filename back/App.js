@@ -53,6 +53,16 @@ app.get("/logReg", async (req, res) => {
   });
 });
 
+app.get("/login", async (req, res) => {
+  getConnection();
+  res.json({ 
+    user: "Usuario", 
+    contaseña: "Contraseña",
+    restart: "He olvidado la contraseña",
+    reg: "Registrar"
+  });
+});
+
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto: ${PORT}`);
