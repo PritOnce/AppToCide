@@ -12,7 +12,7 @@ export default function LogRegPage() {
     const [registerText, setRegisterText] = useState("");
 
     useEffect(() => {
-        fetch('http://172.16.26.27:3001/logReg') // Cambia la URL por la dirección de tu servidor backend
+        fetch('http://192.168.0.48:3001/logReg') // Cambia la URL por la dirección de tu servidor backend
             .then(response => response.json())
             .then(data => {
                 setLoginText(data.login);

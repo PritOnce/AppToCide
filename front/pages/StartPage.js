@@ -8,7 +8,7 @@ export default function StartPage() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetch("http://172.16.26.27:3001")
+    fetch("http://192.168.0.48:3001")
       .then((response) => response.json())
       .then((data) => setData(data.message))
       .catch((error) => console.error("Error fetching data:", error));

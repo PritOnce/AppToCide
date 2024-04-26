@@ -9,10 +9,11 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 const allowedOrigins = [
-  "http://172.16.161.76:3001",
-  "http://192.168.1.65:3001",
-  "http://172.16.26.27:3001", // IP de la red local
+  "http://172.16.161.76:3001", //portatil clase
+  "http://192.168.1.65:3001", //casa
+  "http://172.16.26.27:3001", // clase ordenador
   "http://localhost:8081",    // localhost
+  "http://192.168.0.48:3001", //casa lilian
 ];
 
 const corsOptions = {
@@ -29,6 +30,7 @@ const dbConfig = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());  
 
 
 const getConnection = async () => {
@@ -56,12 +58,22 @@ app.get("/logReg", async (req, res) => {
 
 app.get("/login", async (req, res) => {
   getConnection();
-  res.json({ 
-    user: "Usuario:", 
-    contaseña: "Contraseña:",
-    restart: "He olvidado la contraseña",
-    reg: "Registrar"
-  });
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const connection = await getConnection();
+    const [rows] = await connection.execute("SELECT * FROM users WHERE username = ? AND password = ?", [username, password]);
+    if (rows.length > 0) {
+      res.status(200).json({ message: "Inicio de sesión exitoso" });
+    } else {
+      res.status(401).json({ message: "Credenciales incorrectas" });
+    }
+  } catch (error) {
+    console.error("Error en el inicio de sesión:", error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
 });
 
 app.get("/restartPassw", async (req, res) => {

@@ -9,7 +9,7 @@ export default function ResetPassword() {
     const [repitPassText, setRepitPassText] = useState("");
 
     useEffect(() => {
-        fetch('http://172.16.26.27:3001/restartPassw')
+        fetch('http://192.168.0.48:3001/restartPassw')
             .then(response => response.json())
             .then(data => {
                 setPassText(data.newContaseña);

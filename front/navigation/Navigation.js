@@ -7,6 +7,7 @@ import ResetPassword from '../pages/ResetPassword';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RegisterPage from '../pages/RegisterPage';
+import MenuPage from '../pages/MenuPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,27 +18,32 @@ export default function Navigation() {
                 <Stack.Screen 
                     name="StartPage" 
                     component={StartPage} 
-                    options={{ headerTitle: "", headerBackVisible: true }} 
+                    options={{ headerTitle: "", headerBackVisible: true, headerStyle: {backgroundColor: 'white'} }} 
                 />
                 <Stack.Screen 
                     name="LogRegPage" 
                     component={LogRegPage} 
-                    options={{ headerTitle: "", headerBackVisible: true }} 
+                    options={{ headerTitle: "", headerBackVisible: true, headerStyle: {backgroundColor: 'white'} }} 
                 />
                 <Stack.Screen 
                     name="LoginPage" 
                     component={LoginPage} 
-                    options={{ headerTitle: "", headerBackVisible: true }} 
+                    options={{ headerTitle: "", headerBackVisible: true, headerStyle: {backgroundColor: 'white'} }} 
                 />
                 <Stack.Screen 
                     name="ResetPassword" 
                     component={ResetPassword} 
-                    options={{ headerTitle: "", headerBackVisible: true }} 
+                    options={{ headerTitle: "", headerBackVisible: true, headerStyle: {backgroundColor: 'white'} }} 
                 />
                 <Stack.Screen 
                     name="RegisterPage" 
                     component={RegisterPage} 
-                    options={{ headerTitle: "", headerBackVisible: true }} 
+                    options={{ headerTitle: "", headerBackVisible: true, headerStyle: {backgroundColor: '#2C8344'} }} 
+                />
+                <Stack.Screen 
+                    name="MenuPage" 
+                    component={MenuPage} 
+                    options={{ headerTitle: "", headerBackVisible: true, headerStyle: {backgroundColor: 'white'} }} 
                 />
                 {/* Agrega más pantallas según sea necesario */}
             </Stack.Navigator>
