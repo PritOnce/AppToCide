@@ -1,14 +1,18 @@
+import {IP_MAIN} from '@env'
+
 import React, { useState, useEffect } from "react";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import Fondo from "../Maquetas/Fondo";
 import { useNavigation } from '@react-navigation/native';
+
+import { colors, fontSizes, sizes, borders } from '../constantes/themes';
 
 export default function StartPage() {
   const [data, setData] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetch("http://192.168.0.48:3001")
+    fetch(IP_MAIN)
       .then((response) => response.json())
       .then((data) => setData(data.message))
       .catch((error) => console.error("Error fetching data:", error));
@@ -30,11 +34,11 @@ export default function StartPage() {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 36,
+    fontSize: fontSizes.title,
     marginTop: 70,
     marginLeft: 30,
     textAlign: "left",
-    color: "white"
+    color: colors.primary
   },
   buttonContainer: {
     position: 'absolute',

@@ -1,3 +1,5 @@
+import {IP_MAIN} from '@env'
+
 import React, { useEffect, useState } from "react";
 import Fondo from "../Maquetas/Fondo";
 import { Text, StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
@@ -9,7 +11,7 @@ export default function ResetPassword() {
     const [repitPassText, setRepitPassText] = useState("");
 
     useEffect(() => {
-        fetch('http://192.168.0.48:3001/restartPassw')
+        fetch(IP_MAIN+'/restartPassw')
             .then(response => response.json())
             .then(data => {
                 setPassText(data.newContaseña);

@@ -1,34 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 import Fondo from "../Maquetas/Fondo";
-import { Text, StyleSheet, TouchableOpacity, View, TextInput, Alert } from "react-native";
-
 import { useNavigation } from '@react-navigation/native';
+import ErrorModal from '../Maquetas/ErrorModal'; // Importar el componente ErrorModal
 
 export default function LoginPage() {
     const navigation = useNavigation();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleLogin = async () => {
         try {
-            const response = await fetch('http://192.168.0.48:3001/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-            const data = await response.json();
-            // Aquí puedes manejar la respuesta del backend, por ejemplo, mostrar un mensaje de éxito o error.
-            if (response.ok) {
-                // Acción a realizar en caso de éxito, por ejemplo, navegación a otra pantalla.
-                navigation.navigate('MenuPage');
-            } else {
-                // Acción a realizar en caso de error, por ejemplo, mostrar un mensaje de error.
-                Alert.alert("Error", data.message);
-            }
+            // Tu código de autenticación...
+            // Si la autenticación falla, establece el mensaje de error y muestra el modal
+            setErrorMessage("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+            setErrorModalVisible(true);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -48,20 +37,18 @@ export default function LoginPage() {
                     secureTextEntry
                     onChangeText={text => setPassword(text)}
                 />
-                <TouchableOpacity style={styles.buttonRestart} onPress={() => { navigation.navigate('ResetPassword') }}>
-                    <Text style={styles.buttonRestartText}>He olvidado la contaseña</Text>
+                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                    <Text style={styles.buttonText}>Entrar</Text>
                 </TouchableOpacity>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={ handleLogin }>
-                        <Text style={styles.buttonText}>Entrar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('RegisterPage') }}>
-                        <Text style={styles.buttonText}>Registrase</Text>
-                    </TouchableOpacity>
-                </View>
             </View>
+            {/* Mostrar el modal de error si está visible */}
+            <ErrorModal
+                visible={errorModalVisible}
+                message={errorMessage}
+                onClose={() => setErrorModalVisible(false)}
+            />
         </Fondo>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -69,11 +56,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 50,
     },
     input: {
         width: 320,
-        height: 62,
+        height: 50,
         fontSize: 20,
         backgroundColor: "white",
         marginVertical: 10,
@@ -82,21 +68,14 @@ const styles = StyleSheet.create({
         borderColor: "black",
         padding: 20,
     },
-    buttonRestart: {
-        fontSize: 16,
-    },
-    buttonRestartText: {
-        color: "white",
-    },
     button: {
         width: 150,
-        height: 51,
+        height: 50,
         backgroundColor: "white",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 5,
-        marginHorizontal: 10,
-        bottom: -20,
+        marginVertical: 10,
         borderColor: "black",
         borderWidth: 3,
         borderRadius: 10,
@@ -105,7 +84,4 @@ const styles = StyleSheet.create({
         color: "black",
         fontSize: 18,
     },
-    buttonContainer: {
-        flexDirection: 'row', // Para que los botones se coloquen uno al lado del otro
-    }
 });

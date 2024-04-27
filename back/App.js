@@ -9,11 +9,11 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 const allowedOrigins = [
-  "http://172.16.161.76:3001", //portatil clase
-  "http://192.168.1.65:3001", //casa
-  "http://172.16.26.27:3001", // clase ordenador
-  "http://localhost:8081",    // localhost
-  "http://192.168.0.48:3001", //casa lilian
+  process.env.PORTATIL_CLASE,
+  process.env.CASA,
+  process.env.CLASE_ORDENADOR,
+  process.env.LOCALHOST,
+  process.env.CASA_LILIAN,
 ];
 
 const corsOptions = {
@@ -64,7 +64,7 @@ app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     const connection = await getConnection();
-    const [rows] = await connection.execute("SELECT * FROM users WHERE username = ? AND password = ?", [username, password]);
+    const [rows] = await connection.execute("SELECT * FROM userApp WHERE usuario = ? AND contraseña = ?", [username, password]);
     if (rows.length > 0) {
       res.status(200).json({ message: "Inicio de sesión exitoso" });
     } else {

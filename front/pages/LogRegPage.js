@@ -1,3 +1,5 @@
+import {IP_MAIN} from '@env'
+
 import React, { useEffect, useState } from "react";
 import Fondo from "../Maquetas/Fondo";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -12,7 +14,7 @@ export default function LogRegPage() {
     const [registerText, setRegisterText] = useState("");
 
     useEffect(() => {
-        fetch('http://192.168.0.48:3001/logReg') // Cambia la URL por la dirección de tu servidor backend
+        fetch(IP_MAIN+'/logReg') // Cambia la URL por la dirección de tu servidor backend
             .then(response => response.json())
             .then(data => {
                 setLoginText(data.login);

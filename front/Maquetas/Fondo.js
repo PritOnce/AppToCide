@@ -1,5 +1,7 @@
 import { View, Image, StyleSheet } from "react-native";
 
+import {colors, sizes} from "../constantes/themes";
+
 export default function Fondo({children}) {
   return (
     <>
@@ -16,7 +18,7 @@ export default function Fondo({children}) {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -25,6 +27,8 @@ const styles = StyleSheet.create({
       aspectRatio: 1,
       position: 'absolute',
       top: 0,
+      width: sizes.logoWidth,
+      height: sizes.logoHeigt
     },
     square: {
       width: '100%',

@@ -1,3 +1,5 @@
+import {IP_MAIN} from '@env'
+
 import React from "react";
 import { useState } from "react";
 import {
