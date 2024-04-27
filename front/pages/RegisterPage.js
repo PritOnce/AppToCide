@@ -10,6 +10,7 @@ import {
   Switch,
   ScrollView,
 } from "react-native";
+import { sizes } from '../constantes/themes';
 
 export default function RegisterPage() {
   const [isEnable, setIsEnable] = useState(false);
@@ -38,8 +39,8 @@ export default function RegisterPage() {
           <TextInput style={styles.input} placeholder="Apellidos:" />
           <TextInput style={styles.input} placeholder="Dirrección:" />
           <View style={styles.hugs}>
-            <TextInput style={styles.input} placeholder="Fecha nacimiento:" />
-            <TextInput style={styles.input} placeholder="DNI:" />
+            <TextInput style={{width: 130, height: 40, borderWidth: 2, borderColor: 'black', borderRadius: 3, paddingLeft: 10}} placeholder="Fecha nacimiento:" />
+            <TextInput style={{width: 130, height: 40, borderWidth: 2, borderColor: 'black', borderRadius: 3, marginLeft: 20, paddingLeft: 10}} placeholder="DNI:" />
           </View>
           <TextInput style={styles.input} placeholder="Curso a Cursar:" />
           <TextInput style={styles.input} placeholder="Curso Anterior:" />
@@ -108,8 +109,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: 280,
-    height: 40,
+    width: sizes.inputFromWith,
+    height: sizes.inputFormHeight,
     color: "black",
     fontSize: 16,
     borderColor: "black",
@@ -123,4 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
+  hugs: {
+    flexDirection: 'row'
+  }
 });

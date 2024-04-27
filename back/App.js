@@ -14,6 +14,7 @@ const allowedOrigins = [
   process.env.CLASE_ORDENADOR,
   process.env.LOCALHOST,
   process.env.CASA_LILIAN,
+  process.env.CASA_PORTATIL
 ];
 
 const corsOptions = {

@@ -3,12 +3,14 @@ import {IP_MAIN} from '@env'
 import React, { useEffect, useState } from "react";
 import Fondo from "../Maquetas/Fondo";
 import { Text, StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
+import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
 
 export default function ResetPassword() {
 
     const [passText, setPassText] = useState("");
     const [repitPassText, setRepitPassText] = useState("");
+
 
     useEffect(() => {
         fetch(IP_MAIN+'/restartPassw')
@@ -48,19 +50,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 50,
     },
     input: {
-        width: 320,
-        height: 62,
-        fontSize: 20,
-        backgroundColor: "white",
+        width: sizes.mainWith,
+        height: sizes.mainHeight,
+        fontSize: fontSizes.subLabels,
+        backgroundColor: colors.primary,
         marginVertical: 10,
-        borderWidth: 3,
-        borderRadius: 10,
-        borderColor: "black",
-        padding: 20,
-        marginVertical: 25,
+        borderWidth: borders.bigRadiousWith,
+        borderRadius: borders.bigRadious,
+        borderColor: colors.text,
+        padding: 20
     },
     button: {
         width: 150,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         marginVertical: 25,
     },
     buttonText: {
-        color: "black",
-        fontSize: 24,
+        color: colors.text,
+        fontSize: fontSizes.subTitlesCamps,
     },
 });

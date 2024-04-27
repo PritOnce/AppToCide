@@ -6,8 +6,8 @@ id int primary key auto_increment,
 usuario varchar(20) unique,
 contraseña varchar(16)
 );
-insert into users (usuario, contraseña) values ("prit", "prit");
-select * from users;
+insert into userApp (usuario, contraseña) values ("prit", "prit");
+select * from userApp;
 
 Create table contacto (
 id int primary key auto_increment,

@@ -1,6 +1,6 @@
 //colores
 export const colors = {
-    primary: 'FFFFFF', //Blanco
+    primary: 'white', //Blanco
     secondary: '#2C8344', //Verde
     text: '#000000', //Negro
     error: '#C42E1F',
@@ -29,6 +29,8 @@ export const colors = {
       leaveBtnHeight: 37,
       logoWidth: 380,
       logoHeigt: 120,
+      inputFromWith: 280,
+      inputFormHeight: 40,
   }
 
   export const borders = {

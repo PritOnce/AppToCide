@@ -11,6 +11,7 @@ export default function StartPage() {
   const [data, setData] = useState(null);
   const navigation = useNavigation();
 
+
   useEffect(() => {
     fetch(IP_MAIN)
       .then((response) => response.json())
@@ -51,12 +52,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 5,
-    borderColor: "black",
-    borderWidth: 3
+    borderRadius: borders.bigRadious,
+    borderColor: borders.borderColor,
+    borderWidth: borders.bigRadiousWith
   },
   buttonText: {
-    color: "black",
-    fontSize: 16,
+    color: colors.text,
+    fontSize: fontSizes.subTitlesCamps,
   },
 });

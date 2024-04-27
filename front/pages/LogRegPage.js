@@ -5,6 +5,7 @@ import Fondo from "../Maquetas/Fondo";
 import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from '@react-navigation/native';
+import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
 
 export default function LogRegPage() {
@@ -13,6 +14,7 @@ export default function LogRegPage() {
     const [loginText, setLoginText] = useState("");
     const [registerText, setRegisterText] = useState("");
 
+    
     useEffect(() => {
         fetch(IP_MAIN+'/logReg') // Cambia la URL por la dirección de tu servidor backend
             .then(response => response.json())
@@ -49,18 +51,18 @@ const styles = StyleSheet.create({
         marginBottom: 50,
     },
     button: {
-        width: 247,
-        height: 60,
-        backgroundColor: "white",
+        width: sizes.mainWith,
+        height: sizes.mainHeight,
+        backgroundColor: colors.primary,
         justifyContent: "center",
         alignItems: "center",
-        borderRadius: 10,
-        borderWidth: 3,
-        borderColor: "black",
+        borderRadius: borders.bigRadious,
+        borderWidth: borders.bigRadiousWith,
+        borderColor: borders.borderColor,
         marginVertical: 25,
     },
     buttonText: {
-        color: "black",
-        fontSize: 24,
+        color: colors.text,
+        fontSize: fontSizes.buttonsLabels,
     },
 });
