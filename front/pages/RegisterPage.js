@@ -1,4 +1,4 @@
-import {IP_MAIN} from '@env'
+import { IP_MAIN } from '@env'
 
 import React from "react";
 import { useState } from "react";
@@ -9,10 +9,35 @@ import {
   TextInput,
   Switch,
   ScrollView,
+  TouchableOpacity
 } from "react-native";
-import { sizes } from '../constantes/themes';
+import { colors, fontSizes, sizes, borders } from '../constantes/themes';
+import { useNavigation } from '@react-navigation/native';
+
+import { useRegisterState, useErrorStates } from '../states/index.js';
 
 export default function RegisterPage() {
+  const navigation = useNavigation();
+
+  const { username, setUsername, password, setPassword,
+    names, setNames, surnames, setSurnames,
+    address, setAddress, birthDate, setBirthDate,
+    dni, setDni, grade, setGrade,
+    pastGrade, setPastGrade, contactNames, setContactNames,
+    contactSurnames, setContactSurnames, contactDni, setContactDni,
+    contactEmail, setContactEmail, IBAN, setIBAN,
+    entidad, setEntidad,
+    oficina, setOficina, DC, setDC, numberAccount, setNumberAccount,
+  } = useRegisterState();
+
+
+  const {
+    errorModalVisible,
+    setErrorModalVisible,
+    errorMessage,
+    setErrorMessage
+  } = useErrorStates();
+
   const [isEnable, setIsEnable] = useState(false);
   const toggleSwitch = () => setIsEnable((previousState) => !previousState);
 
@@ -20,33 +45,66 @@ export default function RegisterPage() {
   const toggleSwitchCuota = () =>
     setIsEnableCuota((previousState) => !previousState);
 
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(IP_MAIN + "/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username, password,
+          names, surnames, address, birthDate, dni, grade,
+          anteriorCentro, contactNames, contactSurnames, contactDni,
+          contactEmail, IBAN, entidad, oficina, DC, numberAccount
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        navigation.navigate("MenuPage");
+      } else {
+        setErrorMessage(
+          "Credenciales incorrectas. Por favor, inténtalo de nuevo."
+        );
+        setErrorModalVisible(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <View style={styles.data}>
           <Text style={styles.label}>DATOS CUENTA</Text>
-          <TextInput style={styles.input} placeholder="Usuario:" />
+          <TextInput
+            style={styles.input}
+            placeholder="Usuario:"
+            onChangeText={(text) => setUsername(text)}
+          />
           <TextInput
             style={styles.input}
             placeholder="Contraseña:"
             secureTextEntry
+            onChangeText={(text) => setPassword(text)}
           />
         </View>
 
         <View style={styles.data}>
           <Text style={styles.label}>DATOS ESTUDIANTE</Text>
-          <TextInput style={styles.input} placeholder="Nombres:" />
-          <TextInput style={styles.input} placeholder="Apellidos:" />
-          <TextInput style={styles.input} placeholder="Dirrección:" />
+          <TextInput style={styles.input} placeholder="Nombres:" onChangeText={(text) => setNames(text)} />
+          <TextInput style={styles.input} placeholder="Apellidos:" onChangeText={(text) => setSurnames(text)} />
+          <TextInput style={styles.input} placeholder="Dirrección:" onChangeText={(text) => setAddress(text)} />
           <View style={styles.hugs}>
-            <TextInput style={{width: 130, height: 40, borderWidth: 2, borderColor: 'black', borderRadius: 3, paddingLeft: 10}} placeholder="Fecha nacimiento:" />
-            <TextInput style={{width: 130, height: 40, borderWidth: 2, borderColor: 'black', borderRadius: 3, marginLeft: 20, paddingLeft: 10}} placeholder="DNI:" />
+            <TextInput style={{ width: 130, height: 40, borderWidth: 2, borderColor: 'black', borderRadius: 3, paddingLeft: 10 }} placeholder="Fecha nacimiento:" onChangeText={(text) => setBirthDate(text)} />
+            <TextInput style={{ width: 130, height: 40, borderWidth: 2, borderColor: 'black', borderRadius: 3, marginLeft: 20, paddingLeft: 10 }} placeholder="DNI:" onChangeText={(text) => setDni(text)} />
           </View>
-          <TextInput style={styles.input} placeholder="Curso a Cursar:" />
-          <TextInput style={styles.input} placeholder="Curso Anterior:" />
+          <TextInput style={styles.input} placeholder="Curso a Cursar:" onChangeText={(text) => setGrade(text)}/>
+          <TextInput style={styles.input} placeholder="Colegio Anterior:" />
           <View style={styles.switch}>
             <View style={styles.switchData}>
-              <Text>Cuota Cide</Text>
+              <Text>Cuota{"\n"}Cide</Text>
               <Switch
                 trackColor={{ false: "grey", true: "black" }}
                 onValueChange={toggleSwitch}
@@ -54,8 +112,8 @@ export default function RegisterPage() {
                 thumbColor={isEnable ? "green" : "black"}
               />
             </View>
-            <View>
-              <Text>Seguro Médico</Text>
+            <View style={styles.switchData}>
+              <Text>Seguro{"\n"}Médico</Text>
               <Switch
                 trackColor={{ false: "grey", true: "black" }}
                 onValueChange={toggleSwitchCuota}
@@ -82,6 +140,10 @@ export default function RegisterPage() {
           <TextInput style={styles.input} placeholder="DC:" />
           <TextInput style={styles.input} placeholder="Nª CUENTA:" />
         </View>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Registrar</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -126,5 +188,36 @@ const styles = StyleSheet.create({
   },
   hugs: {
     flexDirection: 'row'
-  }
+  },
+  switch: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  switchData: {
+    borderWidth: borders.bigRadiousWith,
+    borderColor: colors.text,
+    borderRadius: borders.bigRadious,
+    flexDirection: 'column',
+    padding: 5,
+    marginHorizontal: 10,
+    width: 116,
+    height: 100,
+    alignItems: 'center',
+  },
+  button: {
+    width: 150,
+    height: 50,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    marginVertical: 10,
+    borderColor: "black",
+    borderWidth: 3,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: colors.text,
+    fontSize: fontSizes.subTitlesCamps,
+  },
 });

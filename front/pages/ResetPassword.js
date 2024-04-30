@@ -11,7 +11,6 @@ export default function ResetPassword() {
     const [passText, setPassText] = useState("");
     const [repitPassText, setRepitPassText] = useState("");
 
-
     useEffect(() => {
         fetch(IP_MAIN+'/restartPassw')
             .then(response => response.json())

@@ -8,19 +8,29 @@ import {
 } from "react-native";
 import Fondo from "../Maquetas/Fondo";
 import { useNavigation } from "@react-navigation/native";
-import ErrorModal from "../Maquetas/ErrorModal"; // Importar el componente ErrorModal
+import ErrorModal from "../Maquetas/ErrorModal"; // Importar el compone ErrorModal
 import { borders, colors, fontSizes, sizes } from "../constantes/themes";
+import { useLoginStates, useErrorStates } from "../states/index.js";
 
 import {IP_MAIN} from '@env';
 
 export default function LoginPage() {
   const navigation = useNavigation();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorModalVisible, setErrorModalVisible] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword
+  } = useLoginStates();
 
+  const { 
+    errorModalVisible,
+    setErrorModalVisible,
+    errorMessage,
+    setErrorMessage
+  } = useErrorStates();
+  
   const handleLogin = async () => {
     try {
       const response = await fetch(IP_MAIN + "/login", {

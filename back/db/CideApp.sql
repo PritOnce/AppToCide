@@ -16,7 +16,7 @@ nombre2 varchar(50),
 apellido1 varchar(50) not null,
 apellido2 varchar(50) not null,
 dni varchar(9) not null unique,
-email varchar(100)
+email varchar(100) not null
 );
 
 Create table estudiantes (
@@ -32,7 +32,9 @@ curso_a_cursar varchar(100) not null,
 centro_anterior varchar(100),
 iban varchar(30),
 dni_contacto varchar(9),
-foreign key (dni_contacto) references contacto(dni)
+foreign key (dni_contacto) references contacto(dni),
+id_user varchar(9),
+foreign key (id_user) references userApp(id)
 );
 
 Create table facturas (

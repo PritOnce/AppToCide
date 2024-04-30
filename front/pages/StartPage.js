@@ -5,12 +5,11 @@ import { Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import Fondo from "../Maquetas/Fondo";
 import { useNavigation } from '@react-navigation/native';
 
-import { colors, fontSizes, sizes, borders } from '../constantes/themes';
+import { colors, fontSizes, borders } from '../constantes/themes';
 
 export default function StartPage() {
   const [data, setData] = useState(null);
   const navigation = useNavigation();
-
 
   useEffect(() => {
     fetch(IP_MAIN)
