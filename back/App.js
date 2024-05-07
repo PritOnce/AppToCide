@@ -115,6 +115,12 @@ app.post("/register", async (req, res) => {
     )
 
     await connection.query(
+      "Insert into estudiantes (nombr1, nombre2, apellido1, "+
+      "apellido2, dirreccion, fecha_nacimiento, dni, curso_a_cursar, "+
+      "centro_anterior, iban, dni_contacto, id_user) values (?, ?, ?, ?, ?, ?)",
+    )
+
+    await connection.query(
       "Insert into estudiantes (nombr1, nombre2, apellido1, apellido2, dirreccion, fecha_nacimiento, dni, curso_a_cursar, centro_anterior, iban, dni_contacto, id_user) values (?, ?, ?, ?, ?, ?)", 
       [namesSplit[0], namesSplit[1], surnameSplit[0], surnameSplit[1], address, birthDate, dni, grade, anteriorCentro, ibanComplete, contactDni, userId]
     )

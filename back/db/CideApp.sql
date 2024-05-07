@@ -34,7 +34,8 @@ iban varchar(30),
 dni_contacto varchar(9),
 foreign key (dni_contacto) references contacto(dni),
 id_user varchar(9),
-foreign key (id_user) references userApp(id)
+foreign key (id_user) references userApp(id),
+familia_numerosa boolean default false
 );
 
 Create table facturas (
@@ -46,7 +47,7 @@ user_facturas varchar(20),
 foreign key (user_facturas) references userApp(usuario)
 );
 
-Create table material (
+Create table productos (
 id INT PRIMARY KEY AUTO_INCREMENT,
 nombre VARCHAR(100),
 descripcion TEXT,
@@ -56,18 +57,32 @@ stock INT,
 disponible BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE carrito (
-id INT PRIMARY KEY AUTO_INCREMENT,
-usuario_id INT,
-producto_id INT,
-servicio_id int,
-cantidad_producto INT,
-FOREIGN KEY (usuario_id) REFERENCES userApp(id),
-FOREIGN KEY (producto_id) REFERENCES material(id),
-FOREIGN KEY (servicio_id) REFERENCES servicios(id)
+CREATE TABLE carrito_producto (
+id_carrito_producto INT PRIMARY KEY AUTO_INCREMENT,
+id_carrito INT,
+id_producto INT,
+cantidad INT,
+FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito),
+FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
 
-CREATE TABLE servicios_extraescolares (
+CREATE TABLE carrito (
+id_carrito INT PRIMARY KEY AUTO_INCREMENT,
+id_usuario INT,
+fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (id_usuario) REFERENCES userApp(id)
+);
+
+CREATE TABLE carrito_extraescolar (
+id_carrito_extraescolar INT PRIMARY KEY AUTO_INCREMENT,
+id_carrito INT,
+id_extraescolar INT,
+cantidad INT,
+FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito),
+FOREIGN KEY (id_extraescolar) REFERENCES extraescolares(id)
+);
+
+CREATE TABLE extraescolares (
 id INT PRIMARY KEY AUTO_INCREMENT,
 nombre VARCHAR(100),
 descripcion TEXT,

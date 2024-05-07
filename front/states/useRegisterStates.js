@@ -3,6 +3,7 @@ import React, { useState } from "react";
 export const useRegisterState = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   const [names, setNames] = useState("");
   const [surnames, setSurnames] = useState("");
   const [address, setAddress] = useState("");
@@ -14,6 +15,10 @@ export const useRegisterState = () => {
   const [contactSurnames, setContactSurnames] = useState("");
   const [contactDni, setContactDni] = useState("");
   const [contactEmail, setContactEmail] = useState("");
+  const [seguro, setSeguro] = useState(true);
+  const [cuotaCide, setCuotaCide] = useState(true);
+  const [familiaNumerosa, setFamiliaNumerosa] = useState(true);
+
   const [IBAN, setIBAN] = useState("");
   const [entidad, setEntidad] = useState("");
   const [oficina, setOficina] = useState("");
@@ -47,6 +52,12 @@ export const useRegisterState = () => {
     setContactDni,
     contactEmail,
     setContactEmail,
+    seguro,
+    setSeguro,
+    cuotaCide,
+    setCuotaCide,
+    familiaNumerosa,
+    setFamiliaNumerosa,
     IBAN,
     setIBAN,
     entidad,

@@ -29,7 +29,7 @@ export const colors = {
       leaveBtnHeight: 37,
       logoWidth: 380,
       logoHeigt: 120,
-      inputFromWith: 280,
+      inputFromWith: 350,
       inputFormHeight: 40,
   }
 
