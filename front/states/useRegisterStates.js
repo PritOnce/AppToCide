@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export const useRegisterState = () => {
   const [username, setUsername] = useState("");
@@ -10,7 +10,7 @@ export const useRegisterState = () => {
   const [birthDate, setBirthDate] = useState("");
   const [dni, setDni] = useState("");
   const [grade, setGrade] = useState("");
-  const [anteriorCentro, setanteriorCentro] = useState("");
+  const [pastGrade, setPastGrade] = useState("");
   const [contactNames, setContactNames] = useState("");
   const [contactSurnames, setContactSurnames] = useState("");
   const [contactDni, setContactDni] = useState("");
@@ -20,10 +20,6 @@ export const useRegisterState = () => {
   const [familiaNumerosa, setFamiliaNumerosa] = useState(true);
 
   const [IBAN, setIBAN] = useState("");
-  const [entidad, setEntidad] = useState("");
-  const [oficina, setOficina] = useState("");
-  const [DC, setDC] = useState("");
-  const [numberAccount, setNumberAccount] = useState("");
 
   return {
     username,
@@ -42,8 +38,8 @@ export const useRegisterState = () => {
     setDni,
     grade,
     setGrade,
-    anteriorCentro,
-    setanteriorCentro,
+    pastGrade,
+    setPastGrade,
     contactNames,
     setContactNames,
     contactSurnames,
@@ -59,14 +55,6 @@ export const useRegisterState = () => {
     familiaNumerosa,
     setFamiliaNumerosa,
     IBAN,
-    setIBAN,
-    entidad,
-    setEntidad,
-    oficina,
-    setOficina,
-    DC,
-    setDC,
-    numberAccount,
-    setNumberAccount,
+    setIBAN
   };
 };

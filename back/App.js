@@ -82,10 +82,10 @@ app.get("/register", async (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-  const { username, password, names, surnames,
-    address, birthDate, dni, grade, anteriorCentro,
+  const { username, password, names, surnames, address, birthDate,
+    dni, grade, pastGrade, seguro, cuotaCide, familiaNumerosa,
     contactNames, contactSurnames, contactDni, contactEmail,
-    IBAN, entidad, oficina, DC, numberAccount } = req.body;
+    IBAN } = req.body;
 
   const namesSplit = names.split(" ");
   const surnameSplit = surnames.split(" ");
@@ -93,44 +93,42 @@ app.post("/register", async (req, res) => {
   const contactNamesSplit = contactNames.split(" ");
   const contactSurnameSplit = contactSurnames.split(" ");
 
-  const ibanComplete = IBAN + entidad + oficina + DC + numberAccount;
-
   try {
     const connection = await getConnection();
 
     await connection.query(
-      "Insert into userApp (usuario, contraseña) values (?, ?)", [username, password]
+      "INSERT INTO userApp (usuario, contraseña) VALUES (?, ?)", [username, password]
     )
 
-    const [rows] = await connection.execute("SELECT id FROM userApp WHERE usuario = ? AND contraseña = ?", [username, password]);
-    if (rows.length > 0) {
-      const userId = rows[0].id;
-      res.status(200).json({ message: "Obtencion exitosa", userId });
-    } else {
-      res.status(401).json({ message: "No encontrado" });
-    }
     await connection.query(
-      "Insert into contacto (nombr1, nombre2, apellido1, apellido2, dni, email) values (?, ?, ?, ?, ?, ?)", 
+      "INSERT INTO contacto (nombr1, nombre2, apellido1, apellido2, dni, email) VALUES (?, ?, ?, ?, ?, ?)",
       [contactNamesSplit[0], contactNamesSplit[1], contactSurnameSplit[0], contactSurnameSplit[1], contactDni, contactEmail]
     )
 
-    await connection.query(
-      "Insert into estudiantes (nombr1, nombre2, apellido1, "+
-      "apellido2, dirreccion, fecha_nacimiento, dni, curso_a_cursar, "+
-      "centro_anterior, iban, dni_contacto, id_user) values (?, ?, ?, ?, ?, ?)",
-    )
-
-    await connection.query(
-      "Insert into estudiantes (nombr1, nombre2, apellido1, apellido2, dirreccion, fecha_nacimiento, dni, curso_a_cursar, centro_anterior, iban, dni_contacto, id_user) values (?, ?, ?, ?, ?, ?)", 
-      [namesSplit[0], namesSplit[1], surnameSplit[0], surnameSplit[1], address, birthDate, dni, grade, anteriorCentro, ibanComplete, contactDni, userId]
-    )
-
-    res.status(200).json({ message: "Datos registrados correctamente" });
+    const [rowsUserApp] = await connection.execute("SELECT id FROM userApp WHERE usuario = ? AND contraseña = ?", [username, password]);
+    if (rowsUserApp.length > 0) {
+      const userId = rowsUserApp[0].id;
+      await connection.query(
+        "INSERT INTO estudiantes (nombr1, nombre2, apellido1, " +
+        "apellido2, dirreccion, fecha_nacimiento, dni, curso, " +
+        "centro_anterior, iban, dni_contacto, id_user, familia_numerosa, seguro, cuota_cide) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [namesSplit[0], namesSplit[1], surnameSplit[0], surnameSplit[1], address,
+          birthDate, dni, grade, pastGrade, IBAN, contactDni, userId, familiaNumerosa, seguro, cuotaCide]
+      )
+      await connection.query(
+        "INSERT INTO curso_escolar (nombre_curso, estudiante_nif) VALUES (?, ?)", [grade, dni]
+      )
+      res.status(200).json({ message: "Datos registrados correctamente" });
+    } else {
+      res.status(401).json({ message: "No encontrado" });
+    }
   } catch (error) {
     console.error("Error en el registro de datos:", error);
     res.status(500).json({ message: "Error en el servidor" });
   }
 })
+
 
 app.get("/restartPassw", async (req, res) => {
   getConnection();

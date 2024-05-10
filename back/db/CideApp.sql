@@ -1,9 +1,11 @@
 Create database CideApp;
 use CideApp;
 
+drop database CideApp;
+
 Create table userApp (
 id int primary key auto_increment,
-usuario varchar(20) unique,
+usuario varchar(20),
 contraseña varchar(16)
 );
 insert into userApp (usuario, contraseña) values ("prit", "prit");
@@ -14,7 +16,7 @@ id int primary key auto_increment,
 nombr1 varchar(50) not null,
 nombre2 varchar(50),
 apellido1 varchar(50) not null,
-apellido2 varchar(50) not null,
+apellido2 varchar(50),
 dni varchar(9) not null unique,
 email varchar(100) not null
 );
@@ -24,18 +26,27 @@ id int primary key auto_increment,
 nombr1 varchar(50) not null,
 nombre2 varchar(50),
 apellido1 varchar(50) not null,
-apellido2 varchar(50) not null,
+apellido2 varchar(50),
 dirreccion varchar(100) not null,
-fecha_nacimiento date not null,
+fecha_nacimiento varchar(20) not null,
 dni varchar(9) not null unique,
-curso_a_cursar varchar(100) not null,
+curso varchar(100) not null,
 centro_anterior varchar(100),
 iban varchar(30),
-dni_contacto varchar(9),
+dni_contacto varchar(10),
 foreign key (dni_contacto) references contacto(dni),
-id_user varchar(9),
+id_user int,
 foreign key (id_user) references userApp(id),
+seguro boolean default true,
+cuota_cide boolean default true,
 familia_numerosa boolean default false
+);
+
+Create table curso_escolar (
+id int primary key auto_increment,
+nombre_curso varchar(100) not null,
+estudiante_nif varchar(20) not null unique,
+foreign key (estudiante_nif) references estudiantes(dni)
 );
 
 Create table facturas (

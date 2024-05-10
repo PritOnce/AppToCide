@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useRegisterState, useErrorStates } from '../states/index.js';
 import Form from '../Maquetas/Form.js';
 import ErrorModal from '../Maquetas/ErrorModal.js';
+import { ManageErrors } from '../errors/ManageErrors.js';
 
 export default function RegisterPage() {
   const navigation = useNavigation();
@@ -16,8 +17,7 @@ export default function RegisterPage() {
     pastGrade, setPastGrade, contactNames, setContactNames,
     contactSurnames, setContactSurnames, contactDni, setContactDni,
     contactEmail, setContactEmail, seguro, setSeguro, cuotaCide, setCuotaCide, 
-    familiaNumerosa, setFamiliaNumerosa, IBAN, setIBAN, entidad, setEntidad,
-    oficina, setOficina, DC, setDC, numberAccount, setNumberAccount,
+    familiaNumerosa, setFamiliaNumerosa, IBAN, setIBAN
   } = useRegisterState();
 
 
@@ -30,29 +30,14 @@ export default function RegisterPage() {
 
   const handleRegister = async () => {
 
-    if (
-      !username ||
-      !password ||
-      !names ||
-      !surnames ||
-      !address ||
-      !birthDate ||
-      !dni ||
-      !grade ||
-      !contactNames ||
-      !contactSurnames ||
-      !contactDni ||
-      !contactEmail ||
-      !IBAN ||
-      !entidad ||
-      !oficina ||
-      !DC ||
-      !numberAccount ||
-      !seguro ||
-      !cuotaCide ||
-      !familiaNumerosa
-    ) {
-      setErrorMessage("Por favor, complete todos los campos.");
+    const validationError = ManageErrors({
+      username, password, names, surnames, address, birthDate,
+      dni, grade, pastGrade, contactNames, contactSurnames, 
+      contactDni, contactEmail, IBAN, seguro, cuotaCide, familiaNumerosa,
+    });
+
+    if (validationError) {
+      setErrorMessage(validationError);
       setErrorModalVisible(true);
       return; // Evita continuar con el envío de la solicitud al backend
     }
@@ -67,7 +52,7 @@ export default function RegisterPage() {
           username, password,
           names, surnames, address, birthDate, dni, grade, pastGrade,
           setPastGrade, contactNames, contactSurnames, contactDni,
-          contactEmail, seguro, cuotaCide, familiaNumerosa, IBAN, entidad, oficina, DC, numberAccount
+          contactEmail, seguro, cuotaCide, familiaNumerosa, IBAN
         }),
       });
       const data = await response.json();
@@ -104,10 +89,6 @@ export default function RegisterPage() {
         setCuotaCide={setCuotaCide}
         setFamiliaNumerosa={setFamiliaNumerosa}
         setIBAN={setIBAN}
-        setEntidad={setEntidad}
-        setOficina={setOficina}
-        setDC={setDC}
-        setNumberAccount={setNumberAccount}
         handleRegister={handleRegister}
       />
       <ErrorModal

@@ -1,12 +1,4 @@
-import {
-    Text,
-    View,
-    StyleSheet,
-    TextInput,
-    Switch,
-    ScrollView,
-    TouchableOpacity
-} from "react-native";
+import { Text, View, StyleSheet, TextInput, Switch, ScrollView, TouchableOpacity } from "react-native";
 
 import { useState } from "react";
 
@@ -15,13 +7,13 @@ import { borders, colors, fontSizes, sizes } from "../constantes/themes";
 export default function Form({
     setUsername, setPassword, setNames, setSurnames, setAddress, setBirthDate,
     setDni, setGrade, setPastGrade, setContactNames, setContactSurnames, setContactDni,
-    setContactEmail, setSeguro, setCuotaCide, setFamiliaNumerosa, setIBAN, setEntidad, setOficina, setDC, setNumberAccount, handleRegister
+    setContactEmail, setSeguro, setCuotaCide, setFamiliaNumerosa, setIBAN, handleRegister
   }) {
 
-    const [isEnable] = useState(false);
+    const [isEnableCuota] = useState(true);
     const toggleSwitch = () => setSeguro((previousState) => !previousState);
 
-    const [isEnableCuota] = useState(false);
+    const [isEnable] = useState(true);
     const toggleSwitchCuota = () =>
         setCuotaCide((previousState) => !previousState);
 
@@ -54,7 +46,7 @@ export default function Form({
                     <TextInput style={styles.input} placeholder="Apellidos:" onChangeText={(text) => setSurnames(text)} />
                     <TextInput style={styles.input} placeholder="Dirrección:" onChangeText={(text) => setAddress(text)} />
                     <View style={styles.hugs}>
-                        <TextInput style={{ width: 160, height: 40, borderWidth: 3, borderColor: 'black', borderRadius: 10, paddingLeft: 10 }} placeholder="Fecha nacimiento:" onChangeText={(text) => setBirthDate(text)} />
+                        <TextInput style={{ width: 160, height: 40, borderWidth: 3, borderColor: 'black', borderRadius: 10, paddingLeft: 10 }}  placeholder="Birthdate(DD/MM/YYYY):" onChangeText={(text) => setBirthDate(text)} />
                         <TextInput style={{ width: 160, height: 40, borderWidth: 3, borderColor: 'black', borderRadius: 10, marginLeft: 30, paddingLeft: 10 }} placeholder="DNI:" onChangeText={(text) => setDni(text)} />
                     </View>
                     <TextInput style={styles.input} placeholder="Curso a Cursar:" onChangeText={(text) => setGrade(text)} />
@@ -106,16 +98,8 @@ export default function Form({
 
                 <View style={styles.data}>
                     <Text>DATOS BANCARIOS</Text>
-                    <TextInput style={styles.input} placeholder="IBAN:" 
+                    <TextInput style={styles.input} placeholder="NUMERO CUENTA BANCARIA" 
                     onChangeText={(text) => setIBAN(text)}/>
-                    <TextInput style={styles.input} placeholder="ENTIDAD:" 
-                    onChangeText={(text) => setEntidad(text)}/>
-                    <TextInput style={styles.input} placeholder="OFICINA:" 
-                    onChangeText={(text) => setOficina(text)}/>
-                    <TextInput style={styles.input} placeholder="DC:" 
-                    onChangeText={(text) => setDC(text)}/>
-                    <TextInput style={styles.input} placeholder="Nª CUENTA:" 
-                    onChangeText={(text) => setNumberAccount(text)}/>
                 </View>
 
                 <TouchableOpacity style={styles.button} onPress={handleRegister}>
