@@ -33,7 +33,7 @@ export default function RegisterPage() {
     const validationError = ManageErrors({
       username, password, names, surnames, address, birthDate,
       dni, grade, pastGrade, contactNames, contactSurnames, 
-      contactDni, contactEmail, IBAN, seguro, cuotaCide, familiaNumerosa,
+      contactDni, contactEmail, IBAN, seguro
     });
 
     if (validationError) {
@@ -86,8 +86,11 @@ export default function RegisterPage() {
         setContactDni={setContactDni}
         setContactEmail={setContactEmail}
         setSeguro={setSeguro}
+        seguro={seguro}
         setCuotaCide={setCuotaCide}
+        cuotaCide={cuotaCide}
         setFamiliaNumerosa={setFamiliaNumerosa}
+        familiaNumerosa={familiaNumerosa}
         setIBAN={setIBAN}
         handleRegister={handleRegister}
       />

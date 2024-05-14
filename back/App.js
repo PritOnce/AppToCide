@@ -1,12 +1,20 @@
 require('dotenv').config();
 
 const express = require("express");
+
 const cors = require("cors");
 const mysql = require("mysql2/promise");
 
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+
+var session = require('express-session'); //importamos el session para poder utilizar el login
+app.use(session({
+  secret: 'contraseña-de-cifrado', // se utiliza para encriptar los datos de los inicios de sesión
+  resave: false,
+  saveUninitialized: false
+}));
 
 const allowedOrigins = [
   process.env.PORTATIL_CLASE,
@@ -68,12 +76,22 @@ app.post("/login", async (req, res) => {
     const [rows] = await connection.execute("SELECT * FROM userApp WHERE usuario = ? AND contraseña = ?", [username, password]);
     if (rows.length > 0) {
       res.status(200).json({ message: "Inicio de sesión exitoso" });
+      req.session.userId = rows[0].id;
     } else {
       res.status(401).json({ message: "Credenciales incorrectas" });
     }
   } catch (error) {
     console.error("Error en el inicio de sesión:", error);
     res.status(500).json({ message: "Error en el servidor" });
+  }
+});
+
+app.get("/loginCheck", async (req, res) => {
+  getConnection();
+  if (req.session.user) {
+    res.json({ loggedIn: true, user: req.session.user });
+  } else {
+    res.json({ loggedIn: false });
   }
 });
 
@@ -138,6 +156,14 @@ app.get("/restartPassw", async (req, res) => {
   });
 });
 
+app.get("/menuPage", async (req, res) => {
+  getConnection();
+  
+});
+
+app.post("/menuPage", async (req, res) => {
+  getConnection();
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto: ${PORT}`);

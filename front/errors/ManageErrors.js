@@ -20,7 +20,7 @@ export function ManageErrors({
     const nameRegex = /^[a-zA-Z\s]*$/;
 
     switch (true) {
-      case (!username || !password || !names || !surnames || !address || !birthDate || !dni || !grade || !contactNames || !contactSurnames || !contactDni || !contactEmail || !IBAN || !seguro || !cuotaCide || !familiaNumerosa):
+      case (!username || !password || !names || !surnames || !address || !birthDate || !dni || !grade || !contactNames || !contactSurnames || !contactDni || !contactEmail || !IBAN || !seguro):
         return "Por favor, complete todos los campos.";
       case (password.length < 8):
         return "La contrasena debe tener al menos 8 caracteres.";
@@ -30,7 +30,7 @@ export function ManageErrors({
         return "La fecha de nacimiento debe tener el formato DD-MM-YYYY.";
       case (!dni.match(/^\d{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/)):
         return "El DNI solo puede contener 8 digitos y una letra.";
-      case (!seguro):
+      case (seguro == false):
         return "Por favor, acepte la politica de privacidad.";
       case(!nameRegex.test(contactNames) || !nameRegex.test(contactSurnames)):
         return "Los nombres y apellidos solo pueden contener letras.";

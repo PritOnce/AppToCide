@@ -1,23 +1,19 @@
 import { Text, View, StyleSheet, TextInput, Switch, ScrollView, TouchableOpacity } from "react-native";
 
-import { useState } from "react";
-
 import { borders, colors, fontSizes, sizes } from "../constantes/themes";
 
 export default function Form({
     setUsername, setPassword, setNames, setSurnames, setAddress, setBirthDate,
     setDni, setGrade, setPastGrade, setContactNames, setContactSurnames, setContactDni,
-    setContactEmail, setSeguro, setCuotaCide, setFamiliaNumerosa, setIBAN, handleRegister
+    setContactEmail, setSeguro, seguro, setCuotaCide, cuotaCide, familiaNumerosa,
+     setFamiliaNumerosa, setIBAN, handleRegister
   }) {
 
-    const [isEnableCuota] = useState(true);
-    const toggleSwitch = () => setSeguro((previousState) => !previousState);
+    const toggleSwitch = () => 
+        setSeguro((previousState) => !previousState);
 
-    const [isEnable] = useState(true);
     const toggleSwitchCuota = () =>
         setCuotaCide((previousState) => !previousState);
-
-    const [isEnableFamilia] = useState(false);
     const toggleSwitchFamilia = () =>
         setFamiliaNumerosa((previousState) => !previousState);
 
@@ -56,18 +52,18 @@ export default function Form({
                             <Text>Cuota{"\n"}Cide</Text>
                             <Switch
                                 trackColor={{ false: "grey", true: "black" }}
-                                onValueChange={toggleSwitch}
-                                value={isEnable}
-                                thumbColor={isEnable ? "green" : "black"}
+                                onValueChange={toggleSwitchCuota}
+                                value={seguro}
+                                thumbColor={seguro ? "green" : "black"}
                             />
                         </View>
                         <View style={styles.switchData}>
                             <Text>Seguro{"\n"}Médico</Text>
                             <Switch
                                 trackColor={{ false: "grey", true: "black" }}
-                                onValueChange={toggleSwitchCuota}
-                                value={isEnableCuota}
-                                thumbColor={isEnableCuota ? "green" : "black"}
+                                onValueChange={toggleSwitch}
+                                value={cuotaCide}
+                                thumbColor={cuotaCide ? "green" : "black"}
                             />
                         </View>
 
@@ -76,8 +72,8 @@ export default function Form({
                             <Switch
                                 trackColor={{ false: "grey", true: "black" }}
                                 onValueChange={toggleSwitchFamilia}
-                                value={isEnableFamilia}
-                                thumbColor={isEnableFamilia ? "green" : "black"}
+                                value={familiaNumerosa}
+                                thumbColor={familiaNumerosa ? "green" : "black"}
                             />
                         </View>
                         

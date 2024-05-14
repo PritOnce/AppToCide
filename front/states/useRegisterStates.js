@@ -17,7 +17,7 @@ export const useRegisterState = () => {
   const [contactEmail, setContactEmail] = useState("");
   const [seguro, setSeguro] = useState(true);
   const [cuotaCide, setCuotaCide] = useState(true);
-  const [familiaNumerosa, setFamiliaNumerosa] = useState(true);
+  const [familiaNumerosa, setFamiliaNumerosa] = useState(false);
 
   const [IBAN, setIBAN] = useState("");
 
