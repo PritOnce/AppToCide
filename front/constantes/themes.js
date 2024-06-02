@@ -19,8 +19,8 @@ export const colors = {
   export const sizes = {
       mainWith: 310,
       mainHeight: 62,
-      menuBtnWidth: 302,
-      menuBtnHeight: 120,
+      menuBtnWidth: 292,
+      menuBtnHeight: 110,
       navbarWidth: 344,
       navbarHeight: 56,
       onClickBtnWidth: 202,

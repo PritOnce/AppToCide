@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.secondary,
         alignItems: "center",
         justifyContent: "center",
+        marginTop: 50,
     },
     data: {
         backgroundColor: "white",

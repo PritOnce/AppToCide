@@ -157,8 +157,24 @@ app.get("/restartPassw", async (req, res) => {
 });
 
 app.get("/menuPage", async (req, res) => {
-  getConnection();
+  getConnection()
+  if (req.session.user) {
+    res.json({ loggedIn: true, user: req.session.user });
+  } else {
+    res.json({ loggedIn: false });
+  }
   
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if(err) {
+      return res.json({ logout: false });
+    }
+
+    res.clearCookie('sid');
+    res.json({ logout: true });
+  });
 });
 
 app.post("/menuPage", async (req, res) => {

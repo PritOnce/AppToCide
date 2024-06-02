@@ -1,21 +1,26 @@
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, ScrollView } from "react-native";
 
 import {colors, sizes} from "../constantes/themes";
 
 export default function Fondo({children}) {
   return (
-    <>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.container}>
         <Image source={require("../assets/logoCide.png")} style={styles.logo} />
         <View style={styles.square}>
           {children}
         </View>
       </View>
-    </>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
     container: {
       flex: 1,
       backgroundColor: colors.primary,
@@ -23,7 +28,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     logo: {
-      marginTop: 70,
+      marginTop: 90,
       aspectRatio: 1,
       position: 'absolute',
       top: 0,

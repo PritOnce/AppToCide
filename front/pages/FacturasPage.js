@@ -5,8 +5,17 @@ import Fondo from "../Maquetas/Fondo";
 import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
 import { useNavigation, CommonActions } from '@react-navigation/native';
-export default function MenuPage() {
+import BurgerMenu from "../Maquetas/BurgerBtn";
+export default function FacturasPage() {
     const navigation = useNavigation();
+
+    function open() {
+        pickerRef.current.focus();
+    }
+
+    function close() {
+        pickerRef.current.blur();
+    }
 
     const handleSignOut = async () => {
         try {
@@ -34,6 +43,7 @@ export default function MenuPage() {
         <Fondo>
             <View style={styles.container}>
                 <View style={styles.navbarStyle}>
+                    <BurgerMenu />
                     <Image source={require("../assets/icono.png")} />
                     <TouchableOpacity onPress={handleSignOut} style={styles.buttonLeave}>
                         <Text>SALIR</Text>
@@ -41,22 +51,7 @@ export default function MenuPage() {
                 </View>
 
                 <View style={styles.btnGroup}>
-                    <TouchableOpacity onPress={() => navigation.navigate('FacturasPage')}
-                    style={styles.menuBtn}>
-                        <Text style={styles.txtBtn}>Facturas</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Perfil')}
-                    style={styles.menuBtn}>
-                        <Text style={styles.txtBtn}>Perfil</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('ServExt')}
-                    style={styles.menuBtn}>
-                        <Text style={styles.txtBtn}>Servicios / Extraescolares</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Material')}
-                    style={styles.menuBtn}>
-                        <Text style={styles.txtBtn}>Material</Text>
-                    </TouchableOpacity>
+
                 </View>
             </View>
         </Fondo>
@@ -82,7 +77,7 @@ const styles = StyleSheet.create({
         width: sizes.navbarWidth,
         height: sizes.navbarHeight,
         flexDirection: "row",
-        justifyContent: "flex-end", 
+        justifyContent: "flex-end",
         marginTop: -150,
         marginRight: -30,
     },
