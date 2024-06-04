@@ -12,13 +12,9 @@ export default function ServiciosPage() {
     const [servicios, setServicios] = useState([]);
     const [cartCount, setCartCount] = useState(0);
 
-    const [cart, setCart] = useState([]);
     const addToCart = (servicios) => {
         setServicios(currentCart => [...currentCart, servicios]);
-    
-        // Incrementa cartCount
-        setCartCount(currentCount => currentCount + 1);
-    
+
         fetch(IP_MAIN + '/serviciosPage', {
             method: 'POST',
             headers: {
@@ -29,7 +25,8 @@ export default function ServiciosPage() {
         })
             .then(response => response.json())
             .then(data => {
-                // Maneja la respuesta del servidor
+                // Incrementa cartCount basado en la respuesta del servidor
+                setCartCount(data.cartCount);
             })
             .catch(error => console.error('Error:', error));
     };

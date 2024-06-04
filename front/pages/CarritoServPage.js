@@ -4,11 +4,11 @@ import Fondo from "../Maquetas/Fondo";
 import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 import Navbar from "../Maquetas/Navbar";
 import { IP_MAIN } from '@env';
+
 export default function CarritoServPage() {
 
-    const [servicos, setServicos] = useState([]);
+    const [servicios, setServicios] = useState([]);
     const [total, setTotal] = useState(0);
-
 
     useEffect(() => {
         fetch(IP_MAIN + '/carritoServ', {
@@ -18,7 +18,7 @@ export default function CarritoServPage() {
             .then(response => response.json())
             .then(data => {
                 if (data.loggedIn) {
-                    setServicos(data.servicos);
+                    setServicios(data.servicios);
                     setTotal(data.total);
                 } else {
                     // handle the case when the user is not logged in
@@ -35,12 +35,10 @@ export default function CarritoServPage() {
             .then(response => response.json())
             .then(data => {
                 if (data.loggedIn) {
-                    // Si el pago se realizó correctamente, vaciar los servicios del carrito y establecer el total a 0
-                    setServicos([]);
+                    setServicios([]);
                     setTotal(0);
                     alert('Pago realizado y carrito vaciado correctamente');
                 } else {
-                    // Manejar el caso cuando el usuario no está logueado
                     alert('Por favor, inicie sesión para realizar el pago');
                 }
             })
@@ -59,8 +57,8 @@ export default function CarritoServPage() {
                         flexDirection: 'row', borderWidth: borders.smallRadiousWith,
                         borderRadius: borders.smallRadious, paddingHorizontal: 5
                     }}>
-                        <TouchableOpacity style={styles.enterButton}>
-                            <Text style={{ padding: 5 }} onPress={handlePayment}>PAGAR</Text>
+                        <TouchableOpacity style={styles.enterButton} onPress={handlePayment}>
+                            <Text style={{ padding: 5 }}>PAGAR</Text>
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity>
@@ -68,24 +66,25 @@ export default function CarritoServPage() {
                     </TouchableOpacity>
                 </View>
                 <ScrollView contentContainerStyle={styles.data}>
-                    {servicos && servicos.map((servicos, index) => (
+                    {servicios && servicios.map((servicio, index) => (
                         <View key={index} style={styles.itemInvoice}>
                             <TouchableOpacity>
                                 <Image source={require("../assets/cuaderno.png")} />
                             </TouchableOpacity>
                             <View style={styles.plz}>
-                                <Text style={{ fontSize: fontSizes.subLabels }}>{servicos.nombre}</Text>
-                                {servicos.descripcion.split(',').map((line, index) => (
+                                <Text style={{ fontSize: fontSizes.subLabels }}>{servicio.nombre}</Text>
+                                {servicio.descripcion.split(',').map((line, index) => (
                                     <Text key={index} style={{ fontSize: 10 }}>{line}</Text>
                                 ))}
-                                <Text style={{ fontSize: fontSizes.subLabels, textAlign: 'center' }}>{servicos.precio}$</Text>
+                                <Text style={{ fontSize: fontSizes.subLabels, textAlign: 'center' }}>{servicio.precio}$</Text>
+                                <Text style={{ fontSize: fontSizes.subLabels, textAlign: 'center' }}>Cantidad: {servicio.cantidad}</Text>
                             </View>
                         </View>
                     ))}
                 </ScrollView>
             </View>
         </Fondo>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     },
     groupLabel: {
         flexDirection: "row",
-        justifyContent: "space-around", // Cambia esto
+        justifyContent: "space-around",
         alignItems: "center",
         width: sizes.navbarWidth,
         height: sizes.navbarHeight,
@@ -111,12 +110,11 @@ const styles = StyleSheet.create({
         borderRadius: borders.smallRadious,
         borderWidth: borders.smallRadiousWith,
         marginBottom: 5,
-        marginRight: 10, // Reducir este valor para acercar los botones
+        marginRight: 10,
     },
     menuButtonText: {
         fontSize: 20,
     },
-
     labels: {
         fontSize: fontSizes.subLabels,
         padding: 5,
@@ -131,8 +129,8 @@ const styles = StyleSheet.create({
         padding: 10,
         flexGrow: 1,
         marginHorizontal: 10,
-        justifyContent: 'center', // Añade esto
-        alignItems: 'center', // Añade esto
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     itemInvoice: {
         width: 220,
@@ -144,5 +142,10 @@ const styles = StyleSheet.create({
         borderColor: borders.borderColor,
         marginHorizontal: 14,
         marginVertical: 10,
+    },
+    plz: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
-})
+});

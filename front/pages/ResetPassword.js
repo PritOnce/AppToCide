@@ -1,25 +1,51 @@
-import {IP_MAIN} from '@env'
+import { IP_MAIN } from '@env'
 
 import React, { useEffect, useState } from "react";
 import Fondo from "../Maquetas/Fondo";
-import { Text, StyleSheet, TouchableOpacity, View, TextInput } from "react-native";
+import { Text, StyleSheet, TouchableOpacity, View, TextInput, Alert } from "react-native";
 import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
+import ErrorModal from '../Maquetas/ErrorModal';
+import { useErrorStates } from '../states/index.js';
+
+import { useNavigation } from "@react-navigation/native";
 
 export default function ResetPassword() {
+    const navigation = useNavigation();
 
+    const [userText, setUserText] = useState("");
     const [passText, setPassText] = useState("");
     const [repitPassText, setRepitPassText] = useState("");
 
-    useEffect(() => {
-        fetch(IP_MAIN+'/restartPassw')
+    const {
+        errorModalVisible,
+        setErrorModalVisible,
+        errorMessage,
+        setErrorMessage
+    } = useErrorStates();
+
+    const handleUpdate = () => {
+        fetch(IP_MAIN + '/restartPassw', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userText, passText, repitPassText }),
+        })
             .then(response => response.json())
             .then(data => {
-                setPassText(data.newContaseña);
-                setRepitPassText(data.repitNewContaseña);
+                if (data.message === "Contraseña actualizada correctamente") {
+                    Alert.alert("Contraseña actualizada correctamente");
+                    navigation.navigate('LoginPage');
+                } else {
+                    setErrorMessage(data.message);
+                    setErrorModalVisible(true);
+                }
             })
-            .catch(error => console.error('Error fetching data:', error));
-    }, []);
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
 
     return (
         <Fondo>
@@ -27,17 +53,34 @@ export default function ResetPassword() {
 
                 <TextInput
                     style={styles.input}
-                    placeholder={passText}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder={repitPassText}
+                    placeholder="Usuario:"
+                    onChangeText={text => setUserText(text)}
+
                 />
 
-                <TouchableOpacity style={styles.button}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nueva Contraseña:"
+                    secureTextEntry
+                    onChangeText={text => setPassText(text)}
+                />
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="Repite Nueva Contraseña:"
+                    secureTextEntry
+                    onChangeText={text => setRepitPassText(text)}
+                />
+
+                <TouchableOpacity style={styles.button} onPress={handleUpdate}>
                     <Text style={styles.buttonText}>Actualizar</Text>
                 </TouchableOpacity>
 
+                <ErrorModal
+                    visible={errorModalVisible}
+                    message={errorMessage}
+                    onClose={() => setErrorModalVisible(false)}
+                />
             </View>
         </Fondo>
     )

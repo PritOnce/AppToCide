@@ -8,6 +8,23 @@ import Navbar from "../Maquetas/Navbar"
 import { useEffect, useState } from "react";
 export default function FacturasPage() {
 
+    const [facturas, setFacturas] = useState([]);
+
+    useEffect(() => {
+        fetch(IP_MAIN + '/facturas', {
+            method: 'GET',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    setFacturas(data.facturas);
+                } else {
+                    // handle the case when the user is not logged in
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }, []);
     return (
         <Fondo>
             <Navbar />
@@ -20,60 +37,14 @@ export default function FacturasPage() {
                     <Text style={styles.labels}>VER</Text>
                 </View>
                 <ScrollView style={styles.invoices}>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <TouchableOpacity>
-                            <Image source={require("../assets/playIcono.png")} />
-                        </TouchableOpacity>
-                    </View>
+                    {facturas.map((factura, index) => (
+                        <View key={index} style={styles.itemInvoice}>
+                            <Text>{factura.fecha_creacion}</Text>
+                            <TouchableOpacity>
+                                <Image source={require("../assets/playIcono.png")} />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
                 </ScrollView>
             </View>
 

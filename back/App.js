@@ -6,6 +6,7 @@ const mysql = require("mysql2/promise");
 const PORT = process.env.PORT || 3001;
 const app = express();
 var session = require('express-session');
+const e = require('express');
 
 app.use(session({
   secret: 'your-secret-key',
@@ -124,14 +125,23 @@ app.post("/register", async (req, res) => {
     if (rowsUserApp.length > 0) {
       const userId = rowsUserApp[0].id;
 
-      await connection.query(
+      const [resultStudent] = await connection.query(
         "INSERT INTO estudiantes (nombr1, nombre2, apellido1, apellido2, dirreccion, fecha_nacimiento, dni, curso, centro_anterior, iban, dni_contacto, id_user, familia_numerosa, seguro, cuota_cide) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [namesSplit[0], namesSplit[1], surnameSplit[0], surnameSplit[1], address, birthDate, dni, grade, pastGrade, IBAN, contactDni, userId, isFamiliaNumerosa, seguro, cuotaCide]
       );
 
+      const studentId = resultStudent.insertId;
+
       await connection.query(
         "INSERT INTO curso_escolar (nombre_curso, estudiante_nif) VALUES (?, ?)", [grade, dni]
       );
+
+      const [result] = await connection.execute("INSERT INTO facturas (fecha_creacion, estado, id_user, tipo_factura, precio) VALUES (CURDATE(), ?, ?, ?)",
+        ['pendiente', userId, "estudiante", 73]);
+      const facturaId = result.insertId;
+
+      await connection.execute("INSERT INTO factura_estudiante (id_factura, id_estudiante) VALUES (?, ?, ?)",
+        [facturaId, studentId]);
 
       res.status(200).json({ message: "Datos registrados correctamente" });
     } else {
@@ -146,8 +156,27 @@ app.post("/register", async (req, res) => {
 app.get("/restartPassw", (req, res) => {
   res.json({
     newContaseña: "Nueva Contraseña:",
-    repitNewContaseña: "Repite Contraseña:",
+    repitNewContaseña: "Repite Contraseña:"
   });
+});
+
+app.post("/restartPassw", async (req, res) => {
+  const { userText, passText, repitPassText } = req.body;
+  const connection = await getConnection();
+
+  if (passText === repitPassText) {
+    const [rows] = await connection.execute("SELECT * FROM userApp WHERE usuario = ?", [userText]);
+
+    if (rows.length > 0) {
+      await connection.execute("UPDATE userApp SET contraseña = ? WHERE usuario = ?", [passText, userText]);
+      res.status(200).json({ message: "Contraseña actualizada correctamente" });
+    } else {
+      res.status(401).json({ message: "Usuario no encontrado" });
+    }
+  } else {
+    res.status(401).json({ message: "Las contraseñas no coinciden" });
+  }
+
 });
 
 app.get("/menuPage", async (req, res) => {
@@ -196,7 +225,7 @@ app.get("/materialPage", async (req, res) => {
     const [cartRows] = await connection.execute(`
           SELECT COUNT(*) as count 
           FROM carrito_productos 
-          WHERE id_usuario = ?
+          WHERE id_usuario = ? AND estado = 'pendiente'
       `, [userId]);
     const cartCount = cartRows[0].count;
 
@@ -215,12 +244,38 @@ app.post("/materialPage", async (req, res) => {
   if (req.session.userId) {
     const userId = req.session.userId;
     const product = req.body;
-    console.log(product.id);
-    await connection.query(
-      "INSERT INTO carrito_productos (id_usuario, id_producto, estado) VALUES (?, ?, ?)", [userId, product.id, "pendiente"]
+
+    console.log(product);
+
+    const [rows] = await connection.execute(
+      "SELECT * FROM carrito_productos WHERE id_usuario = ? AND id_producto = ? AND estado = 'pendiente'",
+      [userId, product.id]
     );
+
+    if (rows.length > 0) {
+      // Si el producto ya está en el carrito, incrementar la cantidad
+      await connection.execute(
+        "UPDATE carrito_productos SET cantidad = cantidad + ? WHERE id_usuario = ? AND id_producto = ? AND estado = 'pendiente'",
+        [1, userId, product.id]
+      );
+    } else {
+      // Si el producto no está en el carrito, añadir un nuevo registro
+      await connection.execute(
+        "INSERT INTO carrito_productos (id_usuario, id_producto, estado, cantidad) VALUES (?, ?, 'pendiente', 1)",
+        [userId, product.id]
+      );
+    }
+
+    // Obtener la cantidad total de todos los productos en el carrito
+    const [totalRows] = await connection.execute(
+      "SELECT SUM(cantidad) as total FROM carrito_productos WHERE id_usuario = ? AND estado = 'pendiente'",
+      [userId]
+    );
+    const totalCantidad = totalRows[0].total;
+
     console.log("Producto agregado al carrito", product.id);
-    res.status(200).json({ message: "Producto agregado al carrito" });
+    res.status(200).json({ message: "Producto agregado al carrito", cartCount: totalCantidad });
+
   } else {
     res.json({ loggedIn: false });
   }
@@ -255,13 +310,39 @@ app.post("/serviciosPage", async (req, res) => {
   const connection = await getConnection();
   if (req.session.userId) {
     const userId = req.session.userId;
-    const product = req.body;
-    console.log(product.id);
-    await connection.query(
-      "INSERT INTO carrito_extraescolares (id_usuario, id_extraescolares, estado) VALUES (?, ?, ?)", [userId, product.id, "pendiente"]
+    const servicio = req.body;
+
+    console.log(servicio);
+
+    // Comprobar si el producto ya está en el carrito
+    const [rows] = await connection.execute(
+      "SELECT * FROM carrito_extraescolares WHERE id_usuario = ? AND id_extraescolares = ? AND estado = 'pendiente'",
+      [userId, servicio.id]
     );
-    console.log("Producto agregado al carrito", product.id);
-    res.status(200).json({ message: "Producto agregado al carrito" });
+
+    if (rows.length > 0) {
+      // Si el producto ya está en el carrito, incrementar la cantidad
+      await connection.execute(
+        "UPDATE carrito_extraescolares SET cantidad = cantidad + ? WHERE id_usuario = ? AND id_extraescolares = ? AND estado = 'pendiente'",
+        [1, userId, servicio.id]
+      );
+    } else {
+      // Si el producto no está en el carrito, añadir un nuevo registro
+      await connection.execute(
+        "INSERT INTO carrito_extraescolares (id_usuario, id_extraescolares, estado, cantidad) VALUES (?, ?, 'pendiente', 1)",
+        [userId, servicio.id]
+      );
+    }
+
+    // Obtener la cantidad total de todos los productos en el carrito
+    const [totalRows] = await connection.execute(
+      "SELECT SUM(cantidad) as total FROM carrito_extraescolares WHERE id_usuario = ? AND estado = 'pendiente'",
+      [userId]
+    );
+    const totalCantidad = totalRows[0].total;
+
+    console.log("Producto agregado al carrito", servicio.i);
+    res.status(200).json({ message: "Producto agregado al carrito", cartCount: totalCantidad });
   } else {
     res.json({ loggedIn: false });
   }
@@ -273,7 +354,7 @@ app.get("/carrito", async (req, res) => {
   if (req.session.userId) {
     const userId = req.session.userId;
     const [rows] = await connection.execute(`
-          SELECT productos.* 
+          SELECT productos.*, carrito_productos.cantidad
           FROM productos 
           INNER JOIN carrito_productos 
           ON productos.id = carrito_productos.id_producto 
@@ -286,7 +367,7 @@ app.get("/carrito", async (req, res) => {
           FROM productos 
           INNER JOIN carrito_productos 
           ON productos.id = carrito_productos.id_producto 
-          WHERE carrito_productos.id_usuario = ?
+          WHERE carrito_productos.id_usuario = ? AND carrito_productos.estado = 'pendiente'
       `, [userId]);
     const total = totalRows[0].total;
 
@@ -306,7 +387,7 @@ app.get("/carritoServ", async (req, res) => {
   if (req.session.userId) {
     const userId = req.session.userId;
     const [rows] = await connection.execute(`
-          SELECT extraescolares.* 
+          SELECT extraescolares.*, carrito_extraescolares.cantidad 
           FROM extraescolares 
           INNER JOIN carrito_extraescolares 
           ON extraescolares.id = carrito_extraescolares.id_extraescolares 
@@ -315,7 +396,7 @@ app.get("/carritoServ", async (req, res) => {
 
     // Obtiene el total de todos los productos en el carrito
     const [totalRows] = await connection.execute(`
-          SELECT SUM(extraescolares.precio) as total 
+          SELECT SUM(extraescolares.precio * carrito_extraescolares.cantidad) as total 
           FROM extraescolares 
           INNER JOIN carrito_extraescolares
           ON extraescolares.id = carrito_extraescolares.id_extraescolares
@@ -324,7 +405,7 @@ app.get("/carritoServ", async (req, res) => {
     const total = totalRows[0].total;
 
     if (rows.length > 0) {
-      res.status(200).json({ loggedIn: true, user: req.session.userId, servicos: rows, total });
+      res.status(200).json({ loggedIn: true, user: req.session.userId, servicios: rows, total });
     } else {
       res.status(200).json({ loggedIn: true, user: req.session.userId, message: "No se encontró el producto", total });
     }
@@ -374,15 +455,33 @@ app.post("/addStudent", async (req, res) => {
     const IBAN = rowStudent[0].iban;
     const contactDni = rowStudent[0].dni_contacto;
 
-    const [rowsContactDni] = await connection.execute("SELECT COUNT(*) as count FROM estudiantes WHERE dni_contacto = ?", [dni]);
-    const isFamiliaNumerosa = rowsContactDni[0].count >= 3;
+    const [rowsContactDni] = await connection.execute("SELECT COUNT(*) as count FROM estudiantes WHERE dni_contacto = ?", [contactDni]);
+    const isFamiliaNumerosa = rowsContactDni[0].count >= 2;
     if (familiaNumerosa && !isFamiliaNumerosa) {
       return res.status(400).json({ message: "No es una familia numerosa" });
     }
-    await connection.query(
+    const [resultStudent] = await connection.query(
       "INSERT INTO estudiantes (nombr1, nombre2, apellido1, apellido2, dirreccion, fecha_nacimiento, dni, curso, centro_anterior, iban, dni_contacto, id_user, familia_numerosa, seguro, cuota_cide) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [namesSplit[0], namesSplit[1], surnameSplit[0], surnameSplit[1], address, birthDate, dni, grade, pastGrade, IBAN, contactDni, userId, familiaNumerosa, seguro, cuotaCide]
     );
+
+    const studentId = resultStudent.insertId;
+
+    await connection.query(
+      "UPDATE estudiantes SET familia_numerosa = ? WHERE dni_contacto = ?", [familiaNumerosa, contactDni]
+    )
+
+    await connection.query(
+      "INSERT INTO curso_escolar (nombre_curso, estudiante_nif) VALUES (?, ?)", [grade, dni]
+    );
+
+    const [result] = await connection.execute("INSERT INTO facturas (fecha_creacion, estado, id_user, tipo_factura, precio) VALUES (CURDATE(), ?, ?, ?)",
+      ['pendiente', userId, "estudiante", 73]);
+    const facturaId = result.insertId;
+
+    await connection.execute("INSERT INTO factura_estudiante (id_factura, id_estudiante) VALUES (?, ?, ?)",
+      [facturaId, studentId]);
+
     console.log("Datos registrados correctamente");
     res.status(200).json({ message: "Datos registrados correctamente" });
   }
@@ -393,24 +492,220 @@ app.post("/payServicios", async (req, res) => {
     const connection = await getConnection();
     const userId = req.session.userId;
 
-    const [rowsServ] = await connection.execute("SELECT * FROM carrito_extraescolares WHERE id_usuario = ? AND estado = 'pendiente'", [userId]);
+    const [rowsContactDni] = await connection.execute("SELECT COUNT(*) as count FROM estudiantes WHERE id_user = ?", [userId]);
+    const isFamiliaNumerosa = rowsContactDni[0].count >= 2;
 
-    for (let i = 0; i < rowsServ.length; i++) {
-      const servicio = rowsServ[i];
+    const [totalRows] = await connection.execute(`
+          SELECT SUM(extraescolares.precio * carrito_extraescolares.cantidad) as total 
+          FROM extraescolares 
+          INNER JOIN carrito_extraescolares
+          ON extraescolares.id = carrito_extraescolares.id_extraescolares
+          WHERE carrito_extraescolares.id_usuario = ? AND carrito_extraescolares.estado = 'pendiente'
+      `, [userId]);
+    const total = totalRows[0].total;
+
+
+    if (isFamiliaNumerosa) {
+      const totalDescuento = total - (total * 0.2);
+
+      const [resultInsert] = await connection.execute("INSERT INTO facturas (fecha_creacion, estado, id_user, tipo_factura, precio) VALUES (CURDATE(), ?, ?, ?, ?)",
+        ['pendiente', userId, "material", totalDescuento]);
+
+      const facturaId = resultInsert.insertId;
+
+      const [rowsServ] = await connection.execute("SELECT * FROM carrito_extraescolares WHERE id_usuario = ? AND estado = 'pendiente'", [userId]);
+
+      for (let i = 0; i < rowsServ.length; i++) {
+        const servicio = rowsServ[i];
+
+        // Disminuir la cantidad de plazas disponibles en el servicio
+        await connection.execute(
+          "UPDATE extraescolares SET plazas = plazas - ? WHERE id = ?",
+          [servicio.cantidad ,servicio.id_extraescolares]
+        );
+
+        // Marcar el servicio como completado para el usuario
+        await connection.execute(
+          "UPDATE carrito_extraescolares SET estado = 'completado' WHERE id_carrito = ? AND id_usuario = ?",
+          [servicio.id_carrito, userId]
+        );
+
+        // Insertar el servicio en la tabla factura_extraescolares
+        await connection.execute("INSERT INTO factura_extraescolares (id_factura, id_extraescolares, cantidad) VALUES (?, ?, ?)",
+          [facturaId, servicio.id_extraescolares, servicio.cantidad]);
+      }
+    } else {
+      // Crear la factura antes del bucle
+      const [result] = await connection.execute("INSERT INTO facturas (fecha_creacion, estado, id_user, tipo_factura, precio) VALUES (CURDATE(), ?, ?, ?, ?)",
+        ['pendiente', userId, "extraescolar", total]);
+
+      const facturaId = result.insertId;
+
+      const [rowsServ] = await connection.execute("SELECT * FROM carrito_extraescolares WHERE id_usuario = ? AND estado = 'pendiente'", [userId]);
+
+      for (let i = 0; i < rowsServ.length; i++) {
+        const servicio = rowsServ[i];
+
+        // Disminuir la cantidad de plazas disponibles en el servicio
+        await connection.execute(
+          "UPDATE extraescolares SET plazas = plazas - ? WHERE id = ?",
+          [servicio.cantidad ,servicio.id_extraescolares]
+        );
+
+        // Marcar el servicio como completado para el usuario
+        await connection.execute(
+          "UPDATE carrito_extraescolares SET estado = 'completado' WHERE id_carrito = ? AND id_usuario = ?",
+          [servicio.id_carrito, userId]
+        );
+
+        // Insertar el servicio en la tabla factura_extraescolares
+        await connection.execute("INSERT INTO factura_extraescolares (id_factura, id_extraescolares, cantidad) VALUES (?, ?, ?)",
+          [facturaId, servicio.id_extraescolares, servicio.cantidad]);
+      }
+    }
+
+    res.status(200).json({ loggedIn: true, user: req.session.userId, message: "Pago realizado correctamente y carrito limpio" });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+app.post("/payMaterial", async (req, res) => {
+  if (req.session.userId) {
+    const connection = await getConnection();
+    const userId = req.session.userId;
+
+    const [result] = await connection.execute("INSERT INTO facturas (fecha_creacion, estado, id_user, tipo_factura) VALUES (CURDATE(), ?, ?, ?)",
+      ['pendiente', userId, "material"]);
+
+    const facturaId = result.insertId;
+
+    const [rowsProd] = await connection.execute("SELECT * FROM carrito_productos WHERE id_usuario = ? AND estado = 'pendiente'", [userId]);
+
+    for (let i = 0; i < rowsProd.length; i++) {
+      const producto = rowsProd[i];
 
       // Disminuir la cantidad de plazas disponibles en el servicio
       await connection.execute(
-        "UPDATE extraescolares SET plazas = plazas - 1 WHERE id = ?",
-        [servicio.id_extraescolares]
+        "UPDATE productos SET stock = stock - 1 WHERE id = ?",
+        [producto.id_producto]
       );
 
       // Marcar el servicio como completado para el usuario
       await connection.execute(
-        "UPDATE carrito_extraescolares SET estado = 'completado' WHERE id_carrito = ?",
-        [servicio.id_carrito]
+        "UPDATE carrito_productos SET estado = 'completado' WHERE id_carrito = ?",
+        [producto.id_carrito]
       );
+
+      await connection.execute("INSERT INTO factura_producto (id_factura, id_producto, cantidad) VALUES (?, ?, ?)",
+        [facturaId, producto.id_producto, producto.cantidad]);
+
     }
     res.status(200).json({ loggedIn: true, user: req.session.userId, message: "Pago realizado correctamente y carrito limpio" });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+app.get("/facturas", async (req, res) => {
+  if (req.session.userId) {
+    const connection = await getConnection();
+    const userId = req.session.userId;
+
+    const [rows] = await connection.execute("SELECT * FROM facturas WHERE id_user = ?", [userId]);
+
+    if (rows.length > 0) {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, facturas: rows });
+    } else {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, message: "No se encontró la factura" });
+    }
+  }
+});
+
+app.get("/facturasAdmin", async (req, res) => {
+  if (req.session.userId) {
+    const connection = await getConnection();
+    const userId = req.session.userId;
+
+    const [rows] = await connection.execute("SELECT * FROM facturas WHERE estado = ?", ["pendiente"]);
+
+    if (rows.length > 0) {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, facturas: rows });
+    } else {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, message: "No se encontró la factura" });
+    }
+  }
+});
+
+app.post("/facturasAdmin", async (req, res) => {
+  if (req.session.userId) {
+    const connection = await getConnection();
+    const userId = req.session.userId;
+    const { facturaId, estado } = req.body;
+
+    try {
+      if (estado) {
+        const [result] = await connection.execute(`
+        UPDATE facturas 
+        SET estado = ? 
+        WHERE id = ?
+      `, ["completado", facturaId]);
+
+        if (result.affectedRows > 0) {
+          res.status(200).json({ success: true, message: 'Factura actualizada correctamente.' });
+        } else {
+          res.status(404).json({ success: false, message: 'Factura no encontrada o no pertenece al usuario.' });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: 'Error en el servidor.' });
+    }
+  } else {
+    res.status(401).json({ loggedIn: false });
+  }
+});
+
+app.get("/studentPage", async (req, res) => {
+  const connection = await getConnection();
+
+  if (req.session.userId) {
+    const userId = req.session.userId;
+
+    const [studentsRow] = await connection.execute(
+      `
+        SELECT * FROM estudiantes
+      `,
+    );
+
+    if (studentsRow.length > 0) {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, students: studentsRow[0] });
+    } else {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, message: "No se encontró el contacto", cartCount });
+    }
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+app.post("/studentPage", async (req, res) => {
+  const connection = await getConnection();
+  const dni = req.body.dni;
+
+  if (req.session.userId) {
+    const userId = req.session.userId;
+    const [studentsRow] = await connection.execute(
+      `
+        SELECT * FROM estudiantes where dni = ?
+      `,
+      [dni]
+    );
+
+    if (studentsRow.length > 0) {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, students: studentsRow[0] });
+    } else {
+      res.status(200).json({ loggedIn: true, user: req.session.userId, message: "No se encontró el contacto", cartCount });
+    }
   } else {
     res.json({ loggedIn: false });
   }

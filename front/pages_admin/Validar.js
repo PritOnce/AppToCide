@@ -1,17 +1,67 @@
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { RadioButton } from 'react-native-paper';
+import { IP_MAIN } from '@env'
 
 import Fondo from "../Maquetas/Fondo";
 import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
 import NavbarAdmin from "../Maquetas/NavbarAdmin";
-import { useState } from "react";
-export default function Validar() {
-    const [checked, setChecked] = useState('');
 
-    const handlePress = (value) => {
-        setChecked(prev => prev === value ? '' : value);
+export default function Validar() {
+    const [checked, setChecked] = useState([]); // Cambia el estado inicial a un array vacío
+
+    const handlePress = (index) => {
+        setChecked(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]); // Agrega o elimina el índice del array
     }
+
+    const [facturas, setFacturas] = useState([]);
+
+    useEffect(() => {
+        fetch(IP_MAIN + '/facturasAdmin', {
+            method: 'GET',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    setFacturas(data.facturas);
+                } else {
+                    // handle the case when the user is not logged in
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }, []);
+
+    const handleSend = async () => {
+        if (checked.length > 0) {
+            for (const index of checked) {
+                const factura = facturas[index];
+                try {
+                    const response = await fetch(IP_MAIN + "/facturasAdmin", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            facturaId: factura.id,
+                            estado: 'completado'
+                        })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        console.log('Éxito:', data.message);
+                    } else {
+                        console.error('Error:', data.message);
+                    }
+                } catch (err) {
+                    console.error('Error:', err);
+                }
+            }
+        } else {
+            alert('Por favor, seleccione al menos una factura para validar.');
+        }
+    };
 
     return (
         <Fondo>
@@ -25,19 +75,22 @@ export default function Validar() {
                     <Text style={styles.labels}>VALIDAR</Text>
                 </View>
                 <ScrollView style={styles.invoices}>
-                    <View style={styles.itemInvoice}>
-                        <Text>2021-06-01</Text>
-                        <RadioButton
-                            value="first"
-                            status={checked === 'first' ? 'checked' : 'unchecked'}
-                            onPress={() => handlePress('first')}
-                        />
-                    </View>
+                    {facturas && facturas.map((factura, index) => (
+                        <View key={index} style={styles.itemInvoice}>
+                            <Text>{factura.fecha_creacion}</Text>
+                            <RadioButton
+                                status={checked.includes(index) ? 'checked' : 'unchecked'} // Comprueba si el array contiene el índice actual
+                                onPress={() => handlePress(index)} // Pasa el índice actual
+                            />
+                        </View>
+                    ))}
                 </ScrollView>
+                <TouchableOpacity style={styles.button} onPress={handleSend}>
+                    <Text style={styles.buttonText}>Enviar</Text>
+                </TouchableOpacity>
             </View>
-
-        </Fondo >
-    )
+        </Fondo>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -81,5 +134,21 @@ const styles = StyleSheet.create({
         padding: 15,
         borderTopWidth: borders.smallRadiousWith,
         borderBottomWidth: borders.smallRadiousWith,
-    }
-})
+    },
+    button: {
+        width: 150,
+        height: 50,
+        backgroundColor: "white",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 5,
+        marginVertical: 10,
+        borderColor: "black",
+        borderWidth: 3,
+        borderRadius: 10,
+    },
+    buttonText: {
+        color: colors.text,
+        fontSize: fontSizes.subTitlesCamps,
+    },
+});

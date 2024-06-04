@@ -27,6 +27,26 @@ export default function CarritoPage() {
             .catch(error => console.error('Error:', error));
     }, []);
 
+    const handlePayment = () => {
+        fetch(IP_MAIN + '/payMaterial', {
+            method: 'POST',
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.loggedIn) {
+                    // Si el pago se realizó correctamente, vaciar los servicios del carrito y establecer el total a 0
+                    setProducts([]);
+                    setTotal(0);
+                    alert('Pago realizado y carrito vaciado correctamente');
+                } else {
+                    // Manejar el caso cuando el usuario no está logueado
+                    alert('Por favor, inicie sesión para realizar el pago');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    };
+
     return (
         <Fondo>
             <Navbar />
@@ -40,7 +60,7 @@ export default function CarritoPage() {
                         borderRadius: borders.smallRadious, paddingHorizontal: 5
                     }}>
                         <TouchableOpacity style={styles.enterButton}>
-                            <Text style={{ padding: 5 }}>PAGAR</Text>
+                            <Text style={{ padding: 5 }} onPress={handlePayment}>PAGAR</Text>
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity>
@@ -48,7 +68,7 @@ export default function CarritoPage() {
                     </TouchableOpacity>
                 </View>
                 <ScrollView contentContainerStyle={styles.data}>
-                    {products.map((product, index) => (
+                    {products && products.map((product, index) => (
                         <View key={index} style={styles.itemInvoice}>
                             <TouchableOpacity>
                                 <Image source={require("../assets/mochila.png")} />
@@ -59,6 +79,7 @@ export default function CarritoPage() {
                                     <Text key={index} style={{ fontSize: 10 }}>{line}</Text>
                                 ))}
                                 <Text style={{ fontSize: fontSizes.subLabels, textAlign: 'center' }}>{product.precio}$</Text>
+                                <Text style={{ fontSize: fontSizes.subLabels, textAlign: 'center' }}>Cantidad: {product.cantidad}</Text>
                             </View>
                         </View>
                     ))}

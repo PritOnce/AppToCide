@@ -53,13 +53,13 @@ foreign key (estudiante_nif) references estudiantes(dni)
 
 Create table facturas (
 id int primary key auto_increment,
-archivo_factura varchar(100),
 fecha_creacion date,
-estado boolean default false, 
-user_facturas varchar(20),
-foreign key (user_facturas) references userApp(usuario)
+estado varchar(20) default "pendiente", 
+id_user int,
+tipo_factura varchar(100),
+precio DECIMAL(10, 2),
+foreign key (id_user) references userApp(id)
 );
-
 Create table productos (
 id INT PRIMARY KEY AUTO_INCREMENT,
 nombre VARCHAR(100),
@@ -88,6 +88,7 @@ id_carrito INT PRIMARY KEY AUTO_INCREMENT,
 id_usuario INT,
 id_producto INT,
 estado VARCHAR(100),
+cantidad int,
 FOREIGN KEY (id_producto) REFERENCES productos(id),
 FOREIGN KEY (id_usuario) REFERENCES userApp(id)
 );
@@ -97,6 +98,7 @@ id_carrito INT PRIMARY KEY AUTO_INCREMENT,
 id_usuario INT,
 id_extraescolares INT,
 estado VARCHAR(100),
+cantidad int,
 FOREIGN KEY (id_extraescolares) REFERENCES extraescolares(id),
 FOREIGN KEY (id_usuario) REFERENCES userApp(id)
 );
@@ -107,6 +109,30 @@ nombre VARCHAR(100),
 descripcion TEXT,
 precio DECIMAL(10, 2),
 plazas int
+);
+create table factura_extraescolares (
+id_factura_extraescolares int primary key auto_increment,
+id_factura int,
+id_extraescolares int,
+cantidad int,
+foreign key (id_factura) references facturas(id),
+foreign key (id_extraescolares) references extraescolares(id)
+);
+create table factura_producto (
+id_factura_producto int primary key auto_increment,
+id_factura int,
+id_producto int,
+cantidad int,
+foreign key (id_factura) references facturas(id),
+foreign key (id_producto) references productos(id)
+);
+
+create table factura_estudiante (
+id_factura_estudiante int primary key auto_increment,
+id_factura int,
+id_estudiante int,
+foreign key (id_factura) references facturas(id),
+foreign key (id_estudiante) references estudiantes(id)
 );
 
 ALTER TABLE extraescolares ADD COLUMN precio_diario DECIMAL(10, 2) NULL;

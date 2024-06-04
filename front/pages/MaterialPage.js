@@ -13,26 +13,21 @@ export default function MaterialPage() {
     const [products, setProducts] = useState([]);
     const [cartCount, setCartCount] = useState(0);
 
-    const [cart, setCart] = useState([]);
-    const addToCart = (product) => {
-        // Agrega el producto al estado del carrito
-        setCart(currentCart => [...currentCart, product]);
-    
-        // Incrementa cartCount
-        setCartCount(currentCount => currentCount + 1);
-    
-        // Envía el producto al backend
+    const addToCart = (material) => {
+        setProducts(currentCart => [...currentCart, material]);
+
         fetch(IP_MAIN + '/materialPage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(product),
+            body: JSON.stringify(material),
             credentials: 'include'
         })
             .then(response => response.json())
             .then(data => {
                 // Maneja la respuesta del servidor
+                setCartCount(data.cartCount);
             })
             .catch(error => console.error('Error:', error));
     };
