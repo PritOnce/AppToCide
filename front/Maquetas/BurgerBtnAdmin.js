@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { borders } from '../constantes/themes';
 
-const BurgerMenu = () => {
+const BurgerMenuAdmin = () => {
     const navigation = useNavigation();
     const [menuVisible, setMenuVisible] = useState(false);
 
@@ -23,20 +23,14 @@ const BurgerMenu = () => {
             </TouchableOpacity>
             {menuVisible && (
                 <View style={styles.menu}>
-                    <TouchableOpacity onPress={() => navigateToScreen('MenuPage')}>
+                    <TouchableOpacity onPress={() => navigateToScreen('MenuAdmin')}>
                         <Text>Menu</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigateToScreen('FacturasPage')}>
-                        <Text>Facturas</Text>
+                    <TouchableOpacity onPress={() => navigateToScreen('AlumnosAdmin')}>
+                        <Text>Alumnos</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigateToScreen('PerfilPage')}>
-                        <Text>Perfil</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigateToScreen('MaterialPage')}>
-                        <Text>Material</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigateToScreen('ServiciosPage')}>
-                        <Text>Servicios</Text>
+                    <TouchableOpacity onPress={() => navigateToScreen('Validar')}>
+                        <Text>Validar</Text>
                     </TouchableOpacity>
                 </View>
             )}
@@ -54,8 +48,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: borders.mediumRadious,
         borderWidth: borders.smallRadiousWith,
-        marginBottom: 10,
-        marginRight: 165,
+        marginBottom: 5,
+        marginRight: 200,
     },
     menuButtonText: {
         fontSize: 20,
@@ -74,4 +68,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default BurgerMenu;
+export default BurgerMenuAdmin;

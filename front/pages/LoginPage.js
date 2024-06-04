@@ -41,8 +41,12 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      if (response.ok) {
-        navigation.navigate("MenuPage");
+      if (data.loggedIn) { // Verificar si el inicio de sesión fue exitoso
+        if(username === 'admin' && password === 'admin') {
+          navigation.navigate('MenuAdmin');
+        } else {
+          navigation.navigate('MenuPage');
+        }
       } else {
         setErrorMessage(
           "Credenciales incorrectas. Por favor, inténtalo de nuevo."

@@ -13,8 +13,6 @@ export function ManageErrors({
     contactEmail,
     IBAN, 
     seguro,
-    cuotaCide,
-    familiaNumerosa
   }) {
 
     const nameRegex = /^[a-zA-Z\s]*$/;

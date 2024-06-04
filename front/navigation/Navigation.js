@@ -9,7 +9,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import RegisterPage from '../pages/RegisterPage';
 import MenuPage from '../pages/MenuPage';
 import FacturasPage from '../pages/FacturasPage';
-
+import PefilPage from '../pages/PerfilPage';
+import ServiciosPage from '../pages/ServiciosPage';
+import MaterialPage from '../pages/MaterialPage';
+import CarritoPage from '../pages/CarritoPage';
+import MenuAdmin from '../pages_admin/MenuAdmin';
+import AlumnosAdmin from '../pages_admin/AlumnosAdmin';
+import Validar from '../pages_admin/Validar';
+import CarritoServPage from '../pages/CarritoServPage';
+import AddStudent from '../pages/AddStudent';
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -51,6 +59,52 @@ export default function Navigation() {
             component={FacturasPage} 
             options={{ headerShown: false }} 
         />
+        <Stack.Screen 
+            name="PerfilPage" 
+            component={PefilPage} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="ServiciosPage" 
+            component={ServiciosPage} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="MaterialPage" 
+            component={MaterialPage} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="CarritoPage" 
+            component={CarritoPage} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="CarritoPageServ" 
+            component={CarritoServPage} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="MenuAdmin" 
+            component={MenuAdmin} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="AlumnosAdmin" 
+            component={AlumnosAdmin} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="Validar" 
+            component={Validar} 
+            options={{ headerShown: false }} 
+        />
+        <Stack.Screen 
+            name="AddStudent" 
+            component={AddStudent} 
+            options={{ headerShown: false }} 
+        />
+        
         {/* Agrega más pantallas según sea necesario */}
     </Stack.Navigator>
 </NavigationContainer>

@@ -1,14 +1,16 @@
+drop database CideApp;
+
 Create database CideApp;
 use CideApp;
 
-drop database CideApp;
+
 
 Create table userApp (
 id int primary key auto_increment,
-usuario varchar(20),
+usuario varchar(20) unique,
 contraseña varchar(16)
 );
-insert into userApp (usuario, contraseña) values ("prit", "prit");
+insert into userApp (usuario, contraseña) values ("admin", "admin");
 select * from userApp;
 
 Create table contacto (
@@ -62,35 +64,41 @@ Create table productos (
 id INT PRIMARY KEY AUTO_INCREMENT,
 nombre VARCHAR(100),
 descripcion TEXT,
-imagen_producto BLOB,
+imagen_producto VARCHAR(100),
 precio DECIMAL(10, 2),
 stock INT,
 disponible BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE carrito_producto (
-id_carrito_producto INT PRIMARY KEY AUTO_INCREMENT,
-id_carrito INT,
-id_producto INT,
-cantidad INT,
-FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito),
-FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
-);
+INSERT INTO productos (nombre, descripcion, imagen_producto, precio, stock, disponible) VALUES
+('Cuaderno A4', 'Cuaderno de tamaño A4 con 100 hojas, ideal para tomar notas en clase.', "..assets/cuaderno.png", 2.50, 50, TRUE),
+('Lápiz HB', 'Lápiz de grafito HB, perfecto para escritura y dibujo.', "..assets/lapiz.png", 0.50, 200, TRUE),
+('Bolígrafo Azul', 'Bolígrafo de tinta azul con punta de 0.7 mm.', "..assets/boli.png", 0.75, 150, TRUE),
+('Mochila Escolar', 'Mochila resistente con varios compartimentos, disponible en varios colores.', "..assets/mochila.png", 25.00, 30, TRUE),
+('Goma de Borrar', 'Goma de borrar blanca, no deja residuos y es ideal para borrar lápiz.', "..assets/goma.png", 0.30, 300, TRUE),
+('Tijeras Escolares', 'Tijeras con punta redondeada, seguras para niños y de fácil manejo.', "..assets/tijeras.png", 1.50, 100, TRUE),
+('Regla 30 cm', 'Regla de 30 cm de plástico transparente, con medidas en centímetros y pulgadas.', "..assets/regla.png", 1.00, 120, TRUE),
+('Estuche', 'Estuche escolar con cremallera, disponible en varios diseños.', "..assets/estuche.png", 5.00, 80, TRUE),
+('Colores', 'Set de 12 colores de madera, perfectos para colorear y dibujar.', "..assets/colores.png", 3.00, 60, TRUE),
+('Pegamento en Barra', 'Pegamento en barra de 21g, ideal para manualidades y trabajos escolares.', "..assets/pegamento.png", 0.80, 90, TRUE);
 
-CREATE TABLE carrito (
+
+CREATE TABLE carrito_productos (
 id_carrito INT PRIMARY KEY AUTO_INCREMENT,
 id_usuario INT,
-fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+id_producto INT,
+estado VARCHAR(100),
+FOREIGN KEY (id_producto) REFERENCES productos(id),
 FOREIGN KEY (id_usuario) REFERENCES userApp(id)
 );
 
-CREATE TABLE carrito_extraescolar (
-id_carrito_extraescolar INT PRIMARY KEY AUTO_INCREMENT,
-id_carrito INT,
-id_extraescolar INT,
-cantidad INT,
-FOREIGN KEY (id_carrito) REFERENCES carrito(id_carrito),
-FOREIGN KEY (id_extraescolar) REFERENCES extraescolares(id)
+CREATE TABLE carrito_extraescolares (
+id_carrito INT PRIMARY KEY AUTO_INCREMENT,
+id_usuario INT,
+id_extraescolares INT,
+estado VARCHAR(100),
+FOREIGN KEY (id_extraescolares) REFERENCES extraescolares(id),
+FOREIGN KEY (id_usuario) REFERENCES userApp(id)
 );
 
 CREATE TABLE extraescolares (
@@ -101,3 +109,14 @@ precio DECIMAL(10, 2),
 plazas int
 );
 
+ALTER TABLE extraescolares ADD COLUMN precio_diario DECIMAL(10, 2) NULL;
+INSERT INTO extraescolares (nombre, descripcion, precio, plazas, precio_diario) VALUES 
+('Master Xef', 'Clase de cocina para niños', 30.00, 20, NULL),
+('Arduino', 'Introducción a la programación y robótica con Arduino', 25.00, 15, NULL),
+('Gimnàsia', 'Actividades de gimnasia para mejorar la condición física', 20.00, 25, NULL),
+('Fútbol', 'Entrenamiento y partidos de fútbol', 25.00, 30, NULL),
+('Bàsquet', 'Entrenamiento y partidos de baloncesto', 25.00, 30, NULL),
+('Anglès amb jocs', 'Clases de inglés a través de juegos y actividades', 25.00, 20, NULL),
+('Robòtica', 'Curso avanzado de robótica', 35.00, 10, NULL),
+('Escola Matinera', 'Servicio de guardería matutina', 90.00, 50, 5.00),
+('Menjador', 'Servicio de comedor escolar', 150.00, 100, 8.50);

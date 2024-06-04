@@ -1,60 +1,34 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { IP_MAIN } from '@env'
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 import Fondo from "../Maquetas/Fondo";
 import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
-import { useNavigation, CommonActions } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+
+import Navbar from "../Maquetas/Navbar";
 export default function MenuPage() {
     const navigation = useNavigation();
-
-    const handleSignOut = async () => {
-        try {
-            const response = await fetch(IP_MAIN + '/logout', { method: 'GET' });
-            const data = await response.json();
-
-            if (data.logout) {
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [
-                            { name: 'LoginPage' },
-                        ],
-                    })
-                );
-            } else {
-                console.error('Error al cerrar la sesión');
-            }
-        } catch (error) {
-            console.error('Error al hacer la solicitud:', error);
-        }
-    }
 
     return (
         <Fondo>
             <View style={styles.container}>
-                <View style={styles.navbarStyle}>
-                    <Image source={require("../assets/icono.png")} />
-                    <TouchableOpacity onPress={handleSignOut} style={styles.buttonLeave}>
-                        <Text>SALIR</Text>
-                    </TouchableOpacity>
-                </View>
+                <Navbar />
 
                 <View style={styles.btnGroup}>
                     <TouchableOpacity onPress={() => navigation.navigate('FacturasPage')}
-                    style={styles.menuBtn}>
+                        style={styles.menuBtn}>
                         <Text style={styles.txtBtn}>Facturas</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Perfil')}
-                    style={styles.menuBtn}>
+                    <TouchableOpacity onPress={() => navigation.navigate('PerfilPage')}
+                        style={styles.menuBtn}>
                         <Text style={styles.txtBtn}>Perfil</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('ServExt')}
-                    style={styles.menuBtn}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ServiciosPage')}
+                        style={styles.menuBtn}>
                         <Text style={styles.txtBtn}>Servicios / Extraescolares</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Material')}
-                    style={styles.menuBtn}>
+                    <TouchableOpacity onPress={() => navigation.navigate('MaterialPage')}
+                        style={styles.menuBtn}>
                         <Text style={styles.txtBtn}>Material</Text>
                     </TouchableOpacity>
                 </View>
@@ -78,16 +52,9 @@ const styles = StyleSheet.create({
         borderRadius: borders.bigRadious,
         borderWidth: borders.bigRadiousWith,
     },
-    navbarStyle: {
-        width: sizes.navbarWidth,
-        height: sizes.navbarHeight,
-        flexDirection: "row",
-        justifyContent: "flex-end", 
-        marginTop: -150,
-        marginRight: -30,
-    },
     btnGroup: {
         justifyContent: "space-around",
+        marginTop: -100,
     },
     menuBtn: {
         width: sizes.menuBtnWidth,
@@ -97,9 +64,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: borders.bigRadious,
         borderWidth: borders.bigRadiousWith,
-        marginVertical: 60,
+        marginVertical: 10,
     },
     txtBtn: {
         fontSize: fontSizes.buttonsLabels,
-    }
+    },
 })

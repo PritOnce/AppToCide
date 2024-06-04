@@ -16,7 +16,7 @@ export default function RegisterPage() {
     dni, setDni, grade, setGrade,
     pastGrade, setPastGrade, contactNames, setContactNames,
     contactSurnames, setContactSurnames, contactDni, setContactDni,
-    contactEmail, setContactEmail, seguro, setSeguro, cuotaCide, setCuotaCide, 
+    contactEmail, setContactEmail, seguro, setSeguro, cuotaCide, setCuotaCide,
     familiaNumerosa, setFamiliaNumerosa, IBAN, setIBAN
   } = useRegisterState();
 
@@ -32,7 +32,7 @@ export default function RegisterPage() {
 
     const validationError = ManageErrors({
       username, password, names, surnames, address, birthDate,
-      dni, grade, pastGrade, contactNames, contactSurnames, 
+      dni, grade, pastGrade, contactNames, contactSurnames,
       contactDni, contactEmail, IBAN, seguro
     });
 
@@ -57,10 +57,10 @@ export default function RegisterPage() {
       });
       const data = await response.json();
       if (response.ok) {
-        navigation.navigate("MenuPage");
+        navigation.navigate("LoginPage");
       } else {
         setErrorMessage(
-          "Credenciales incorrectas. Por favor, inténtalo de nuevo."
+          data.message
         );
         setErrorModalVisible(true);
       }

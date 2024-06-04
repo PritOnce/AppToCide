@@ -1,100 +1,126 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { IP_MAIN } from '@env'
 
 import Fondo from "../Maquetas/Fondo";
 import { borders, colors, fontSizes, sizes } from '../constantes/themes';
 
-import { useNavigation, CommonActions } from '@react-navigation/native';
-import BurgerMenu from "../Maquetas/BurgerBtn";
+import Navbar from "../Maquetas/Navbar"
+import { useEffect, useState } from "react";
 export default function FacturasPage() {
-    const navigation = useNavigation();
-
-    function open() {
-        pickerRef.current.focus();
-    }
-
-    function close() {
-        pickerRef.current.blur();
-    }
-
-    const handleSignOut = async () => {
-        try {
-            const response = await fetch(IP_MAIN + '/logout', { method: 'GET' });
-            const data = await response.json();
-
-            if (data.logout) {
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [
-                            { name: 'LoginPage' },
-                        ],
-                    })
-                );
-            } else {
-                console.error('Error al cerrar la sesión');
-            }
-        } catch (error) {
-            console.error('Error al hacer la solicitud:', error);
-        }
-    }
 
     return (
         <Fondo>
+            <Navbar />
+
             <View style={styles.container}>
-                <View style={styles.navbarStyle}>
-                    <BurgerMenu />
-                    <Image source={require("../assets/icono.png")} />
-                    <TouchableOpacity onPress={handleSignOut} style={styles.buttonLeave}>
-                        <Text>SALIR</Text>
-                    </TouchableOpacity>
-                </View>
+                <Text style={{ fontSize: fontSizes.buttonsLabels }}>Facturas</Text>
 
-                <View style={styles.btnGroup}>
-
+                <View style={styles.groupLabel}>
+                    <Text style={styles.labels}>FECHA</Text>
+                    <Text style={styles.labels}>VER</Text>
                 </View>
+                <ScrollView style={styles.invoices}>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.itemInvoice}>
+                        <Text>2021-06-01</Text>
+                        <TouchableOpacity>
+                            <Image source={require("../assets/playIcono.png")} />
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
             </View>
-        </Fondo>
+
+        </Fondo >
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "flex-start",
         alignItems: "center",
+        marginTop: -600,
     },
-    buttonLeave: {
-        width: sizes.leaveBtnWidth,
-        height: sizes.leaveBtnHeight,
-        backgroundColor: colors.primary,
-        justifyContent: "center",
+    groupLabel: {
+        flexDirection: "row",
+        justifyContent: "space-between",
         alignItems: "center",
-        borderRadius: borders.bigRadious,
-        borderWidth: borders.bigRadiousWith,
-    },
-    navbarStyle: {
+        paddingHorizontal: 30,
         width: sizes.navbarWidth,
         height: sizes.navbarHeight,
-        flexDirection: "row",
-        justifyContent: "flex-end",
-        marginTop: -150,
-        marginRight: -30,
-    },
-    btnGroup: {
-        justifyContent: "space-around",
-    },
-    menuBtn: {
-        width: sizes.menuBtnWidth,
-        height: sizes.menuBtnHeight,
+        marginTop: 20,
+        borderRadius: borders.mediumRadious,
+        borderWidth: borders.smallRadiousWith,
+        borderColor: borders.borderColor,
         backgroundColor: colors.primary,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: borders.bigRadious,
-        borderWidth: borders.bigRadiousWith,
-        marginVertical: 60,
     },
-    txtBtn: {
-        fontSize: fontSizes.buttonsLabels,
+    labels: {
+        fontSize: fontSizes.subLabels,
+        padding: 5,
+    },
+    invoices: {
+        width: sizes.navbarWidth,
+        borderRadius: borders.mediumRadious,
+        borderWidth: borders.smallRadiousWith,
+        borderColor: borders.borderColor,
+        backgroundColor: colors.primary,
+        paddingEnd: 10,
+        paddingStart: 10,
+        paddingBottom: 10,
+        flexGrow: 1
+    },
+    itemInvoice: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 15,
+        borderTopWidth: borders.smallRadiousWith,
+        borderBottomWidth: borders.smallRadiousWith,
     }
 })
